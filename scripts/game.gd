@@ -3,7 +3,7 @@ extends Node2D
 @onready var grid:GridContainer = $GridContainer
 @onready var button: Button = $Button
 
-const cell_rang = Color.YELLOW #add the cell color
+
 
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
@@ -53,7 +53,7 @@ func create_button(pos:Vector2i):
 	
 	#V2
 	var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
-	stylebox.bg_color = cell_rang
+	stylebox.bg_color = Settings.Cell_rang
 	button.add_theme_stylebox_override("normal", stylebox)
 	
 	
