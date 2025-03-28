@@ -6,3 +6,6 @@ var DIFFICULTY = 5
 
 # Suggest whether to show user hint on their selection
 var SHOW_HINTS = true
+
+#UI
+const Cell_rang = Color.YELLOW #add the cell color
