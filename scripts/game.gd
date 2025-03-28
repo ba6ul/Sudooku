@@ -64,7 +64,18 @@ func create_button(pos:Vector2i):
 
 func _on_grid_button_pressed(pos: Vector2i, ans):
 	selected_button = pos
-	select_button_answer = ans # This variable tracks of the answer for the selected button in Scene
+	select_button_answer = ans
+	
+	var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
+	
+	if grid_selected_button.text != "" and puzzle[selected_button[0]][selected_button[1]] !=0:
+		for button in $SelectGrid.get_children():
+			button.disabled = true
+	else:
+		for button in $SelectGrid.get_children():
+			button.disabled = false
+	
+	
 
 func bind_selectgrid_button_actions():
 	for button in $SelectGrid.get_children():
@@ -75,7 +86,8 @@ func _on_selectgrid_button_pressed(number_pressed):
 	if selected_button != Vector2i(-1, -1):
 		var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
 		grid_selected_button.text = str(number_pressed)
-		
+
+
 		# To make it easy for beginners, we could provide hints to show whether their answer is right or wrong.
 		if Settings.SHOW_HINTS:
 			var result_match = (number_pressed == select_button_answer)
