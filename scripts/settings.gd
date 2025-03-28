@@ -8,4 +8,4 @@ var DIFFICULTY = 5
 var SHOW_HINTS = true
 
 #UI
-const Cell_rang = Color.YELLOW #add the cell color
+const Cell_rang = Color.DARK_SLATE_BLUE #add the cell color
