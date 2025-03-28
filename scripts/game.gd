@@ -1,6 +1,9 @@
 extends Node2D
 
 @onready var grid:GridContainer = $GridContainer
+@onready var button: Button = $Button
+
+const cell_rang = Color.YELLOW #add the cell color
 
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
@@ -47,10 +50,15 @@ func create_button(pos:Vector2i):
 	if puzzle[row][col] != 0:
 		button.text = str(puzzle[row][col])
 	button.set("theme_override_font_sizes/font_size", 32)
+	
+	#V2
+	var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
+	stylebox.bg_color = cell_rang
+	button.add_theme_stylebox_override("normal", stylebox)
+	
+	
 	button.custom_minimum_size = Vector2(52, 52)
-	
 	button.pressed.connect(_on_grid_button_pressed.bind(pos, ans))
-	
 	grid.add_child(button)
 	return button
 
