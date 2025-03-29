@@ -5,6 +5,8 @@ extends Node2D
 
 
 
+
+
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
 var puzzle = [] # Holds the puzzle
@@ -56,10 +58,20 @@ func create_button(pos:Vector2i):
 	stylebox.bg_color = Settings.Cell_rang
 	button.add_theme_stylebox_override("normal", stylebox)
 	
+	#v3 Adds gap
+	var gap_size = 6
+	var gap_Container = MarginContainer.new()
+	
+	if row > 0 and row % 3 == 0:
+		gap_Container.add_theme_constant_override("margin_top", gap_size)
+	
+	if col > 0 and col % 3 == 0:
+		gap_Container.add_theme_constant_override("margin_left", gap_size)
+	gap_Container.add_child(button)
 	
 	button.custom_minimum_size = Vector2(52, 52)
 	button.pressed.connect(_on_grid_button_pressed.bind(pos, ans))
-	grid.add_child(button)
+	grid.add_child(gap_Container)
 	return button
 
 func _on_grid_button_pressed(pos: Vector2i, ans):
