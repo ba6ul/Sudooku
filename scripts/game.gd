@@ -2,10 +2,12 @@ extends Node2D
 
 @onready var grid:GridContainer = $GridContainer
 @onready var button: Button = $Button
+@onready var lives_label: Label = $Label
+@onready var hint_button: Button = $HintButton
 
+var hint_system = HintSystem.new()
 
-
-
+var lives = 3
 
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
@@ -18,16 +20,25 @@ var select_button_answer = 0
 
 const GRID_SIZE = 9
 
+# Colors for the Cells 
+const highlight_rang = Color("#362D5E") # Light blue
+const subgrid_highlight_rang = Color("#362D5E") # Light blue (just for testing)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	bind_selectgrid_button_actions()
 	init_game()
+	
+	var hint_status = hint_system.get_hint_status()
+	hint_button.text = "Hint: " + str(hint_status["hints_remaining"])
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	lives_update()
 
 func init_game():
+	
 	_create_empty_grid()
 	_fill_grid(solution_grid) # We will get the solution grid
 	_create_puzzle(Settings.DIFFICULTY)
@@ -74,20 +85,69 @@ func create_button(pos:Vector2i):
 	grid.add_child(gap_Container)
 	return button
 
+# v4 Highlight
+func highlight_related_cells(pos: Vector2i):
+	reset_cell_colors()
+
+	var row = pos[0]
+	var col = pos[1]
+
+	# Subgrid
+	var subgrid_row_start = (row / 3) * 3
+	var subgrid_col_start = (col / 3) * 3
+
+	# Loops and Checks row, col, subgrid
+	for i in range(GRID_SIZE):
+		for j in range(GRID_SIZE):
+			var btn = game_grid[i][j] as Button
+			var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
+
+			var current_bg_color = stylebox.bg_color
+
+			if i == row and j == col:
+				#To highlight the selected cell, add a condition here like:
+				# if current_bg_color != Color.SEA_GREEN and current_bg_color != Color.DARK_RED:
+				#     stylebox.bg_color = highlight_rang
+				pass #
+			elif i == row or j == col:
+				# Highlight ROW and COL (except red and green cell)
+				if current_bg_color != Color.SEA_GREEN and current_bg_color != Color.DARK_RED:
+					stylebox.bg_color = highlight_rang
+			elif (i >= subgrid_row_start and i < subgrid_row_start + 3 and
+				  j >= subgrid_col_start and j < subgrid_col_start + 3):
+				# Highlight subgrid (except red and green cell)
+				if current_bg_color != Color.SEA_GREEN and current_bg_color != Color.DARK_RED:
+					stylebox.bg_color = subgrid_highlight_rang
+
+			btn.add_theme_stylebox_override("normal", stylebox)
+# Change back color
+func reset_cell_colors():
+	for i in range(GRID_SIZE):
+		for j in range(GRID_SIZE):
+			var btn = game_grid[i][j] as Button
+			var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
+			
+			# Changing back Colors
+			if not (Settings.SHOW_HINTS and btn.text != "" and 
+				   ((int(btn.text) == solution_grid[i][j] and stylebox.bg_color == Color.SEA_GREEN) or
+					(int(btn.text) != solution_grid[i][j] and stylebox.bg_color == Color.DARK_RED))):
+				stylebox.bg_color = Settings.Cell_rang
+				
+			btn.add_theme_stylebox_override("normal", stylebox)
+
 func _on_grid_button_pressed(pos: Vector2i, ans):
 	selected_button = pos
 	select_button_answer = ans
+	highlight_related_cells(pos)
 	
 	var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
 	
-	if grid_selected_button.text != "" and puzzle[selected_button[0]][selected_button[1]] !=0:
+	if grid_selected_button.text != "" and puzzle[selected_button[0]][selected_button[1]] != 0:
 		for button in $SelectGrid.get_children():
 			button.disabled = true
 	else:
 		for button in $SelectGrid.get_children():
 			button.disabled = false
-	
-	
 
 func bind_selectgrid_button_actions():
 	for button in $SelectGrid.get_children():
@@ -98,7 +158,6 @@ func _on_selectgrid_button_pressed(number_pressed):
 	if selected_button != Vector2i(-1, -1):
 		var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
 		grid_selected_button.text = str(number_pressed)
-
 
 		# To make it easy for beginners, we could provide hints to show whether their answer is right or wrong.
 		if Settings.SHOW_HINTS:
@@ -111,8 +170,17 @@ func _on_selectgrid_button_pressed(number_pressed):
 				stylebox.bg_color = Color.SEA_GREEN
 			else:
 				stylebox.bg_color = Color.DARK_RED
+				lives -= 1
+				
+			if lives == 0:
+				get_tree().reload_current_scene()
 			btn.add_theme_stylebox_override("normal", stylebox)
-	
+			
+		# Make sure to highlight the cell back after new Input
+		highlight_related_cells(selected_button)
+
+func lives_update():
+	lives_label.text = "Lives left " + str(lives)
 
 # Generating Valid Sudoku grid
 # Recursively validate a position entry and generates a solution grid
@@ -213,3 +281,26 @@ func try_to_solve_grid(puzzle_grid):
 	solution_count += 1
 	if solution_count > 1:
 		return
+
+
+func _on_hint_button_pressed() -> void:
+	var hint = hint_system.generate_hint(puzzle, solution_grid)
+	game_grid[hint.row][hint.col].text = str(hint.correct_number)
+	_hint_effect(hint)
+
+func _hint_effect(hint):
+	var button = game_grid[hint.row][hint.col]
+	var stylebox = button.get_theme_stylebox("normal").duplicate(true)
+	stylebox.bg_color = HintSystem.HINT_COLORS["default"]
+	button.add_theme_stylebox_override("normal", stylebox)
+	
+	var hint_status = hint_system.get_hint_status()
+	var hints_remaining = hint_status["hints_remaining"]
+
+	hint_button.text = "Hint: " + str(hints_remaining)
+
+	if hints_remaining > 0:
+		hint_button.text = "Hint: " + str(hints_remaining)
+	else:
+		hint_button.disabled = true
+		hint_button.text = "Hint: 0"

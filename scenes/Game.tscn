@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://dv2weqgbjob0t"]
 
-[ext_resource type="Script" path="res://scripts/game.gd" id="1_cdfni"]
+[ext_resource type="Script" uid="uid://cl6j45efhdttb" path="res://scripts/game.gd" id="1_cdfni"]
 
-[node name="Game" type="Node2D"]
+[node name="SudookuGame" type="Node2D"]
 script = ExtResource("1_cdfni")
 
 [node name="GridContainer" type="GridContainer" parent="."]
@@ -78,3 +78,22 @@ text = "9"
 [node name="Button" type="Button" parent="."]
 offset_right = 8.0
 offset_bottom = 8.0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HintButton" type="Button" parent="."]
+offset_left = 98.0
+offset_top = 11.0
+offset_right = 156.0
+offset_bottom = 39.0
+
+[node name="Label" type="Label" parent="."]
+offset_left = 388.0
+offset_top = 10.0
+offset_right = 428.0
+offset_bottom = 33.0
+text = "3"
+
+[connection signal="pressed" from="HintButton" to="." method="_on_hint_button_pressed"]
