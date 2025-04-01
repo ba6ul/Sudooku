@@ -3,11 +3,12 @@ extends Node2D
 @onready var grid:GridContainer = $GridContainer
 @onready var button: Button = $Button
 @onready var lives_label: Label = $Label
-@onready var hint_button: Button = $HintButton
+@onready var hint_button: Button = $"UI Buttons/HintButton"
 
 var hint_system = HintSystem.new()
+var note_mode = false
 
-var lives = 3
+var lives = 13
 
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
@@ -61,13 +62,19 @@ func create_button(pos:Vector2i):
 	
 	var button = Button.new()
 	if puzzle[row][col] != 0:
+		#theme for Pre-fill cell (color is temp)
+		var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
+		stylebox.bg_color = Settings.Cell_rang
+		button.add_theme_stylebox_override("normal", stylebox)
+		#Pre=fill NO
 		button.text = str(puzzle[row][col])
+	else:
+		#theme for empty cells 
+		var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
+		stylebox.bg_color = Settings.empty_Cell_rang
+		button.add_theme_stylebox_override("normal", stylebox)
+	#Font size for both 
 	button.set("theme_override_font_sizes/font_size", 32)
-	
-	#V2
-	var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
-	stylebox.bg_color = Settings.Cell_rang
-	button.add_theme_stylebox_override("normal", stylebox)
 	
 	#v3 Adds gap
 	var gap_size = 6
@@ -107,7 +114,7 @@ func highlight_related_cells(pos: Vector2i):
 			if i == row and j == col:
 				#To highlight the selected cell, add a condition here like:
 				# if current_bg_color != Color.SEA_GREEN and current_bg_color != Color.DARK_RED:
-				#     stylebox.bg_color = highlight_rang
+				#     moudulate
 				pass #
 			elif i == row or j == col:
 				# Highlight ROW and COL (except red and green cell)
@@ -126,7 +133,11 @@ func reset_cell_colors():
 		for j in range(GRID_SIZE):
 			var btn = game_grid[i][j] as Button
 			var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
-			
+			var is_correct_cell = false
+			var font_size = btn.get("theme_override_font_sizes/font_size")
+			if btn.text != "" and btn.get("theme_override_font_sizes/font_size") == 32:
+				if int(btn.text) == solution_grid[i][j]:
+					is_correct_cell = true
 			# Changing back Colors
 			if not (Settings.SHOW_HINTS and btn.text != "" and 
 				   ((int(btn.text) == solution_grid[i][j] and stylebox.bg_color == Color.SEA_GREEN) or
@@ -134,20 +145,46 @@ func reset_cell_colors():
 				stylebox.bg_color = Settings.Cell_rang
 				
 			btn.add_theme_stylebox_override("normal", stylebox)
+			
+			if font_size == 10:
+				#write somthing to reset text and add it here
+				pass
 
 func _on_grid_button_pressed(pos: Vector2i, ans):
 	selected_button = pos
 	select_button_answer = ans
 	highlight_related_cells(pos)
-	
 	var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
-	
-	if grid_selected_button.text != "" and puzzle[selected_button[0]][selected_button[1]] != 0:
+		
+		
+	# Disable Numbers logic
+	if grid_selected_button.text != "" and puzzle[pos[0]][pos[1]] != 0:
+		# Disable for pre-filled cells
+		for button in $SelectGrid.get_children():
+			button.disabled = true
+	elif grid_selected_button.text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == 32 and int(grid_selected_button.text) == solution_grid[pos[0]][pos[1]]:
+		# Disable for Correct ans
 		for button in $SelectGrid.get_children():
 			button.disabled = true
 	else:
+		# Enable for (empty cells, notes, incorrect)
 		for button in $SelectGrid.get_children():
 			button.disabled = false
+			
+			
+	# highlight same numbers matching instances
+	if grid_selected_button.text != "":
+		var number_to_highlight = 0
+		# Check if it's a note or a regular number
+		if grid_selected_button.get("theme_override_font_sizes/font_size") == 32:
+			number_to_highlight = int(grid_selected_button.text)
+		highlight_related_cells(pos)
+		highlight_matching_numbers(number_to_highlight)
+	else:
+		# Just highlight related cells if no number
+		highlight_related_cells(pos)
+	
+
 
 func bind_selectgrid_button_actions():
 	for button in $SelectGrid.get_children():
@@ -156,26 +193,46 @@ func bind_selectgrid_button_actions():
 
 func _on_selectgrid_button_pressed(number_pressed):
 	if selected_button != Vector2i(-1, -1):
-		var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
-		grid_selected_button.text = str(number_pressed)
-
-		# To make it easy for beginners, we could provide hints to show whether their answer is right or wrong.
-		if Settings.SHOW_HINTS:
-			var result_match = (number_pressed == select_button_answer)
-			
-			var btn = game_grid[selected_button[0]][selected_button[1]] as Button
-			
-			var stylebox:StyleBoxFlat = btn.get_theme_stylebox("normal").duplicate(true)
-			if result_match == true:
-				stylebox.bg_color = Color.SEA_GREEN
-			else:
-				stylebox.bg_color = Color.DARK_RED
-				lives -= 1
+		var row = selected_button[0]
+		var col = selected_button[1]
+		var grid_selected_button = game_grid[row][col]
+		
+		if puzzle[row][col] == 0:  # Only for editable cells
+			if note_mode:
+				# Handle note mode
+				grid_selected_button.set("theme_override_font_sizes/font_size", 10)
 				
-			if lives == 0:
-				get_tree().reload_current_scene()
-			btn.add_theme_stylebox_override("normal", stylebox)
-			
+				# Add or remove note
+				NoteHandler.add_note(row, col, number_pressed)
+				
+				# Update button text with formatted notes
+				if NoteHandler.has_notes(row, col):
+					grid_selected_button.text = NoteHandler.get_formatted_note_text(row, col)
+				else:
+					grid_selected_button.text = ""
+			else:
+				# Normal mode - enter number
+				grid_selected_button.text = str(number_pressed)
+				grid_selected_button.set("theme_override_font_sizes/font_size", 32)
+				
+				# Red/Green
+				if Settings.SHOW_HINTS:
+					var result_match = (number_pressed == select_button_answer)
+					
+					var btn = game_grid[selected_button[0]][selected_button[1]] as Button
+					
+					var stylebox:StyleBoxFlat = btn.get_theme_stylebox("normal").duplicate(true)
+					if result_match == true:
+						stylebox.bg_color = Color.SEA_GREEN
+						
+					else:
+						stylebox.bg_color = Color.DARK_RED
+						lives -= 1
+						
+					if lives == 0:
+						get_tree().reload_current_scene()
+					btn.add_theme_stylebox_override("normal", stylebox)
+		
 		# Make sure to highlight the cell back after new Input
 		highlight_related_cells(selected_button)
 
@@ -257,7 +314,11 @@ func _create_puzzle(difficulty):
 			if not has_unique_solution(puzzle):
 				puzzle[row][col] = temp
 			else:
+				
 				removals -= 1
+				var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
+				stylebox.bg_color = Settings.empty_Cell_rang
+				button.add_theme_stylebox_override("normal", stylebox)
 
 func has_unique_solution(puzzle_grid):
 	# Checks whether the given grid puzzle will lead to 1 or more solution
@@ -283,10 +344,7 @@ func try_to_solve_grid(puzzle_grid):
 		return
 
 
-func _on_hint_button_pressed() -> void:
-	var hint = hint_system.generate_hint(puzzle, solution_grid)
-	game_grid[hint.row][hint.col].text = str(hint.correct_number)
-	_hint_effect(hint)
+
 
 func _hint_effect(hint):
 	var button = game_grid[hint.row][hint.col]
@@ -304,3 +362,60 @@ func _hint_effect(hint):
 	else:
 		hint_button.disabled = true
 		hint_button.text = "Hint: 0"
+
+# Add this function to highlight all matching numbers
+func highlight_matching_numbers(number: int):
+	if number <= 0:
+		return
+		
+	for i in range(GRID_SIZE):
+		for j in range(GRID_SIZE):
+			var btn = game_grid[i][j] as Button
+			var btn_text = btn.text
+			var font_size = btn.get("theme_override_font_sizes/font_size")
+			
+			if font_size == 10:
+				#btn.add_theme_color_override("font_color", Color(0, 0, 0))  #can't be reset
+				pass
+
+				
+			# Check if the cell contains the same number 
+			# (either directly or as the correct value)
+			if btn_text == str(number) and font_size == 32:
+				var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
+				stylebox.bg_color = Color.BLACK  # Highlight color for matching numbers
+				btn.add_theme_stylebox_override("normal", stylebox)
+				
+			# For prefilled cells or correctly filled cells
+			elif btn_text != "" and int(btn_text) == number and int(btn_text) == solution_grid[i][j]:
+				var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
+				stylebox.bg_color = Color.BLACK
+				btn.add_theme_stylebox_override("normal", stylebox)
+
+#Buttons
+func _on_back_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+
+func _on_reload_pressed() -> void:
+	get_tree().reload_current_scene()
+
+func _on_note_toggle_pressed() -> void:
+	note_mode = !note_mode
+	print("Note mode: " + ("ON" if note_mode else "OFF"))
+
+func _on_hint_button_pressed() -> void:
+	var hint = hint_system.generate_hint(puzzle, solution_grid)
+	game_grid[hint.row][hint.col].text = str(hint.correct_number)
+	_hint_effect(hint)
+
+func _on_clear_button_pressed() -> void:
+	if selected_button != Vector2i(-1, -1):
+		var row = selected_button[0]
+		var col = selected_button[1]
+		var grid_selected_button = game_grid[row][col]
+
+		# Ensure only editable cells can be cleared and prevent clearing correct answers
+		if puzzle[row][col] == 0 and grid_selected_button.text != str(solution_grid[row][col]):
+			grid_selected_button.text = ""
+			reset_cell_colors()
+			NoteHandler.clear_notes(row, col)

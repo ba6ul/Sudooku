@@ -9,3 +9,5 @@ var SHOW_HINTS = true
 
 #UI
 const Cell_rang = Color.DARK_SLATE_BLUE #add the cell color
+const empty_Cell_rang = Color("#6A5ACD") 
+var highlight_modulate: Color = Color(1.3, 1.3, 1.3)
