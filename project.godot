@@ -34,4 +34,4 @@ window/handheld/orientation=1
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
-environment/defaults/default_clear_color=Color(0.133196, 0.133196, 0.133196, 1)
+environment/defaults/default_clear_color=Color(0.0901961, 0.0941176, 0.0901961, 1)
