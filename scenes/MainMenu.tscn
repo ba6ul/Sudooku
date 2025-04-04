@@ -50,42 +50,42 @@ theme_override_font_sizes/font_size = 100
 text = "Sudooku"
 
 [node name="Easy" type="Button" parent="."]
-offset_left = 224.0
-offset_top = 365.0
-offset_right = 408.0
-offset_bottom = 452.0
+offset_left = 199.0
+offset_top = 343.0
+offset_right = 386.0
+offset_bottom = 430.0
 theme_override_font_sizes/font_size = 55
 text = "Simple"
 
 [node name="Hard" type="Button" parent="."]
-offset_left = 224.0
-offset_top = 522.0
-offset_right = 408.0
-offset_bottom = 609.0
+offset_left = 199.0
+offset_top = 500.0
+offset_right = 383.0
+offset_bottom = 587.0
 theme_override_font_sizes/font_size = 55
 text = "Hard"
 
 [node name="Expert" type="Button" parent="."]
-offset_left = 227.0
-offset_top = 647.0
-offset_right = 411.0
-offset_bottom = 734.0
+offset_left = 202.0
+offset_top = 625.0
+offset_right = 386.0
+offset_bottom = 712.0
 theme_override_font_sizes/font_size = 55
 text = "Expert"
 
 [node name="Master" type="Button" parent="."]
-offset_left = 218.0
-offset_top = 779.0
-offset_right = 402.0
-offset_bottom = 866.0
+offset_left = 193.0
+offset_top = 757.0
+offset_right = 387.0
+offset_bottom = 844.0
 theme_override_font_sizes/font_size = 55
 text = "Master"
 
 [node name="Exit" type="Button" parent="."]
-offset_left = 225.0
-offset_top = 1028.0
-offset_right = 409.0
-offset_bottom = 1116.0
+offset_left = 200.0
+offset_top = 1006.0
+offset_right = 384.0
+offset_bottom = 1094.0
 theme_override_font_sizes/font_size = 45
 text = "Exit"
 

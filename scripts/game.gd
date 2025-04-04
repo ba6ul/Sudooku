@@ -8,6 +8,8 @@ const WinScene = preload("res://scenes/win_scene.gd")
 @onready var note_toggle: Button = $"UI Buttons/note_toggle"
 
 var hint_system = HintSystem.new()
+var highlighter = Highlighter.new()
+
 var note_mode = false
 
 var lives = 5
@@ -190,7 +192,7 @@ func _on_grid_button_pressed(pos: Vector2i, ans):
 		if grid_selected_button.get("theme_override_font_sizes/font_size") == 32:
 			number_to_highlight = int(grid_selected_button.text)
 		highlight_related_cells(pos)
-		highlight_matching_numbers(number_to_highlight)
+		highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_to_highlight)
 	else:
 		# Just highlight related cells if no number
 		highlight_related_cells(pos)
@@ -375,42 +377,6 @@ func _hint_effect(hint):
 		hint_button.disabled = true
 		hint_button.text = "Hint: 0"
 
-# Add this function to highlight all matching numbers
-func highlight_matching_numbers(number: int):
-	reset_matching_numbers()
-	if number <= 0:
-		return
-	var match_font_color = Color(1, 0.8, 0.0)
-	for i in range(GRID_SIZE):
-		for j in range(GRID_SIZE):
-			var btn = game_grid[i][j] as Button
-			var btn_text = btn.text
-			var font_size = btn.get("theme_override_font_sizes/font_size")
-			
-			if font_size == 10:
-				#btn.add_theme_color_override("font_color", Color(0, 0, 0))  #can't be reset
-				pass
-
-				
-			# Check if the cell contains the same number 
-			# (either directly or as the correct value)
-			if btn_text == str(number) and font_size == 32:
-				pass
-				btn.modulate = Color(0.727, 2.049, 0.357, 1)
-				btn.add_theme_color_override("font_color", Color(0.318, 0.040, 1.0, 1))
-				
-				btn.add_theme_color_override("font_outline_color", Color(1, 1, 1, 1))  # White outline
-				btn.add_theme_constant_override("outline_size", 2)  # Thickness of the stroke
-
-				btn.add_theme_font_size_override("font_size", 38)  # Make text larger
-
-
-				
-				
-				
-
-
-
 
 #Buttons
 
@@ -442,19 +408,6 @@ func check_puzzle_solved() -> bool:
 func change_scene():
 	print("Done")
 	get_tree().change_scene_to_file("res://scenes/win_scene.tscn")
-
-
-func reset_matching_numbers():
-	for i in range(GRID_SIZE):
-		for j in range(GRID_SIZE):
-			var btn = game_grid[i][j] as Button
-			var font_size = btn.get("theme_override_font_sizes/font_size")
-			btn.remove_theme_color_override("font_color")
-			btn.remove_theme_color_override("font_outline_color")
-			btn.remove_theme_constant_override("outline_size")
-			if font_size == 38:
-				btn.set("theme_override_font_sizes/font_size", 32)
-			
 
 
 func _on_note_toggle_pressed() -> void:
