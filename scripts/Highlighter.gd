@@ -35,3 +35,42 @@ func reset_matching_numbers(GRID_SIZE, game_grid):
 			btn.remove_theme_constant_override("outline_size")
 			if font_size == 38:
 				btn.set("theme_override_font_sizes/font_size", 32)
+
+# Highlights ROW,COL,SUB-GRID
+func highlight_related_cells(GRID_SIZE,game_grid,pos: Vector2i):
+	reset_cell_colors(GRID_SIZE,game_grid)
+
+	var row = pos[0]
+	var col = pos[1]
+
+	# Creates Subgrid
+	var subgrid_row_start = int(row / 3) * 3
+	var subgrid_col_start = int(col / 3) * 3
+
+	# Loops and Checks row, col, subgrid
+	for i in range(GRID_SIZE):
+		for j in range(GRID_SIZE):
+			var btn = game_grid[i][j] as Button
+			
+			var current_bg_color = btn.get_theme_stylebox("normal").bg_color
+
+			if i == row and j == col:
+				# Highlight Selected Button
+				btn.modulate = Settings.highlight_modulate
+			elif i == row or j == col:
+				# Highlight empty ROW and COL
+				if current_bg_color != Color.DARK_RED:
+					btn.modulate = Settings.highlight_modulate
+			elif (i >= subgrid_row_start and i < subgrid_row_start + 3 and
+				  j >= subgrid_col_start and j < subgrid_col_start + 3):
+				#Highlight sub-Grid
+				if current_bg_color !=  Color.DARK_RED:
+					btn.modulate = Settings.highlight_modulate
+
+# reset (Highlights ROW,COL,SUB-GRID)
+func reset_cell_colors(GRID_SIZE,game_grid):
+	for i in range(GRID_SIZE):
+		for j in range(GRID_SIZE):
+
+			var btn = game_grid[i][j] as Button
+			btn.modulate = Color(1, 1, 1, 1)

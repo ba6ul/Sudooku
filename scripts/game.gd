@@ -102,71 +102,49 @@ func create_button(pos:Vector2i):
 	return button
 
 # v4 Highlight
-func highlight_related_cells(pos: Vector2i):
-	reset_cell_colors()
+#func highlight_related_cells(pos: Vector2i):
+	#reset_cell_colors()
+#
+	#var row = pos[0]
+	#var col = pos[1]
+#
+	## Creates Subgrid
+	#var subgrid_row_start = int(row / 3) * 3
+	#var subgrid_col_start = int(col / 3) * 3
+#
+	## Loops and Checks row, col, subgrid
+	#for i in range(GRID_SIZE):
+		#for j in range(GRID_SIZE):
+			#var btn = game_grid[i][j] as Button
+			#
+			#var current_bg_color = btn.get_theme_stylebox("normal").bg_color
+#
+			#if i == row and j == col:
+				## Highlight Selected Button
+				#btn.modulate = Settings.highlight_modulate
+			#elif i == row or j == col:
+				## Highlight empty ROW and COL
+				#if current_bg_color != Color.DARK_RED:
+					#btn.modulate = Settings.highlight_modulate
+			#elif (i >= subgrid_row_start and i < subgrid_row_start + 3 and
+				  #j >= subgrid_col_start and j < subgrid_col_start + 3):
+				##Highlight sub-Grid
+				#if current_bg_color !=  Color.DARK_RED:
+					#btn.modulate = Settings.highlight_modulate
+#
+## Change back color
+#func reset_cell_colors():
+	#for i in range(GRID_SIZE):
+		#for j in range(GRID_SIZE):
+#
+			#var btn = game_grid[i][j] as Button
+			#btn.modulate = Color(1, 1, 1, 1)
 
-	var row = pos[0]
-	var col = pos[1]
-
-	# Creates Subgrid
-	var subgrid_row_start = int(row / 3) * 3
-	var subgrid_col_start = int(col / 3) * 3
-
-	# Loops and Checks row, col, subgrid
-	for i in range(GRID_SIZE):
-		for j in range(GRID_SIZE):
-			var btn = game_grid[i][j] as Button
-			#var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
-			#var current_bg_color = stylebox.bg_color
-			var current_bg_color = btn.get_theme_stylebox("normal").bg_color
-
-			if i == row and j == col:
-				# Highlight Selected Button
-				btn.modulate = Settings.highlight_modulate
-			elif i == row or j == col:
-				# Highlight empty ROW and COL
-				if current_bg_color != Settings.Cell_rang_correct and current_bg_color != Color.DARK_RED:
-					btn.modulate = Settings.highlight_modulate
-			elif (i >= subgrid_row_start and i < subgrid_row_start + 3 and
-				  j >= subgrid_col_start and j < subgrid_col_start + 3):
-				#Highlight sub-Grid
-				if current_bg_color != Settings.Cell_rang_correct and current_bg_color != Color.DARK_RED:
-					btn.modulate = Settings.highlight_modulate
-			#btn.add_theme_stylebox_override("normal", stylebox)
-
-# Change back color
-func reset_cell_colors():
-	for i in range(GRID_SIZE):
-		for j in range(GRID_SIZE):
-			
-			var btn = game_grid[i][j] as Button
-			var is_correct_cell = false
-			var stylebox = btn.get_theme_stylebox("normal").duplicate(true)
-			var font_size = btn.get("theme_override_font_sizes/font_size")
-			
-			
-			if btn.text != "" and btn.get("theme_override_font_sizes/font_size") == 32:
-				if int(btn.text) == solution_grid[i][j]:
-					is_correct_cell = true
-			if not (Settings.SHOW_HINTS and btn.text != "" and 
-				   ((int(btn.text) == solution_grid[i][j] and stylebox.bg_color == Settings.Cell_rang_correct) or
-					(int(btn.text) != solution_grid[i][j] and stylebox.bg_color == Color.DARK_RED))):
-					pass#stylebox.bg_color = Settings.empty_Cell_rang
-				
-			btn.add_theme_stylebox_override("normal", stylebox)
-			btn.modulate = Color(1, 1, 1, 1)
-			
-
-
-			
-			if font_size == 10:
-				#write somthing to reset text and add it here
-				pass
 
 func _on_grid_button_pressed(pos: Vector2i, ans):
 	selected_button = pos
 	select_button_answer = ans
-	highlight_related_cells(pos)
+	highlighter.highlight_related_cells(GRID_SIZE,game_grid,pos)
 	var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
 		
 		
@@ -191,11 +169,11 @@ func _on_grid_button_pressed(pos: Vector2i, ans):
 		# Check if it's a note or a regular number
 		if grid_selected_button.get("theme_override_font_sizes/font_size") == 32:
 			number_to_highlight = int(grid_selected_button.text)
-		highlight_related_cells(pos)
+		highlighter.highlight_related_cells(GRID_SIZE,game_grid,pos)
 		highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_to_highlight)
 	else:
 		# Just highlight related cells if no number
-		highlight_related_cells(pos)
+		highlighter.highlight_related_cells(GRID_SIZE,game_grid,pos)
 	
 
 
@@ -247,8 +225,9 @@ func _on_selectgrid_button_pressed(number_pressed):
 					btn.add_theme_stylebox_override("normal", stylebox)
 					if check_puzzle_solved():
 						change_scene()
+						
 		# Make sure to highlight the cell back after new Input
-		highlight_related_cells(selected_button)
+		highlighter.highlight_related_cells(GRID_SIZE,game_grid,position)
 
 func lives_update():
 	lives_label.text = "Lives left " + str(lives)
@@ -394,7 +373,7 @@ func _on_clear_button_pressed() -> void:
 		# Ensure only editable cells can be cleared and prevent clearing correct answers
 		if puzzle[row][col] == 0 and grid_selected_button.text != str(solution_grid[row][col]):
 			grid_selected_button.text = ""
-			reset_cell_colors()
+			highlighter.reset_cell_colors(GRID_SIZE,game_grid)
 			NoteHandler.clear_notes(row, col)
 			
 func check_puzzle_solved() -> bool:
