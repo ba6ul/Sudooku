@@ -24,6 +24,7 @@ NoteHandler="*res://scripts/note_handler.gd"
 
 window/size/viewport_width=720
 window/size/viewport_height=1280
+window/size/mode=1
 window/size/resizable=false
 window/size/window_width_override=360
 window/size/window_height_override=640

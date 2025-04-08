@@ -12,7 +12,7 @@ var highlighter = Highlighter.new()
 
 var note_mode = false
 
-var lives = 5
+var lives = 15
 
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
@@ -20,19 +20,21 @@ var puzzle = [] # Holds the puzzle
 var solution_grid = [] # Holds the answer to the puzzle
 var solution_count = 0 # No. of valid solution to a solution grid, used only for generating valid grid
 
+var digit_counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # Track occurrences of each digit (1-9,index 0 unused)
+
 var selected_button:Vector2i = Vector2(-1, -1)
 var select_button_answer = 0
 
 const GRID_SIZE = 9
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	bind_selectgrid_button_actions()
 	init_game()
 	
 	var hint_status = hint_system.get_hint_status()
 	hint_button.text = "Hint: " + str(hint_status["hints_remaining"])
-	
+	initialize_digit_counts()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -101,46 +103,6 @@ func create_button(pos:Vector2i):
 	button.pressed.connect(_on_grid_button_pressed.bind(pos, ans))	#grid button press signal
 	return button
 
-# v4 Highlight
-#func highlight_related_cells(pos: Vector2i):
-	#reset_cell_colors()
-#
-	#var row = pos[0]
-	#var col = pos[1]
-#
-	## Creates Subgrid
-	#var subgrid_row_start = int(row / 3) * 3
-	#var subgrid_col_start = int(col / 3) * 3
-#
-	## Loops and Checks row, col, subgrid
-	#for i in range(GRID_SIZE):
-		#for j in range(GRID_SIZE):
-			#var btn = game_grid[i][j] as Button
-			#
-			#var current_bg_color = btn.get_theme_stylebox("normal").bg_color
-#
-			#if i == row and j == col:
-				## Highlight Selected Button
-				#btn.modulate = Settings.highlight_modulate
-			#elif i == row or j == col:
-				## Highlight empty ROW and COL
-				#if current_bg_color != Color.DARK_RED:
-					#btn.modulate = Settings.highlight_modulate
-			#elif (i >= subgrid_row_start and i < subgrid_row_start + 3 and
-				  #j >= subgrid_col_start and j < subgrid_col_start + 3):
-				##Highlight sub-Grid
-				#if current_bg_color !=  Color.DARK_RED:
-					#btn.modulate = Settings.highlight_modulate
-#
-## Change back color
-#func reset_cell_colors():
-	#for i in range(GRID_SIZE):
-		#for j in range(GRID_SIZE):
-#
-			#var btn = game_grid[i][j] as Button
-			#btn.modulate = Color(1, 1, 1, 1)
-
-
 func _on_grid_button_pressed(pos: Vector2i, ans):
 	selected_button = pos
 	select_button_answer = ans
@@ -158,9 +120,7 @@ func _on_grid_button_pressed(pos: Vector2i, ans):
 		for button in $SelectGrid.get_children():
 			button.disabled = true
 	else:
-		# Enable for (empty cells, notes, incorrect)
-		for button in $SelectGrid.get_children():
-			button.disabled = false
+		update_numpad_buttons()
 			
 			
 	# highlight same numbers matching instances
@@ -227,7 +187,8 @@ func _on_selectgrid_button_pressed(number_pressed):
 						change_scene()
 						
 		# Make sure to highlight the cell back after new Input
-		highlighter.highlight_related_cells(GRID_SIZE,game_grid,position)
+		highlighter.highlight_related_cells(GRID_SIZE,game_grid,selected_button)
+	update_digit_counts(number_pressed)
 
 func lives_update():
 	lives_label.text = "Lives left " + str(lives)
@@ -372,8 +333,17 @@ func _on_clear_button_pressed() -> void:
 
 		# Ensure only editable cells can be cleared and prevent clearing correct answers
 		if puzzle[row][col] == 0 and grid_selected_button.text != str(solution_grid[row][col]):
+			#retrieve celaring number and decrement_digit_count before clearing
+			if grid_selected_button.text != "":
+				var cleared_number = int(grid_selected_button.text)
+				decrement_digit_count(cleared_number)
+				
+			#Sets wrong ans(red) bg to normal
+			var stylebox:StyleBoxFlat = grid_selected_button.get_theme_stylebox("normal").duplicate(true)
+			stylebox.bg_color = Settings.empty_Cell_rang
+			grid_selected_button.add_theme_stylebox_override("normal", stylebox)
+			
 			grid_selected_button.text = ""
-			highlighter.reset_cell_colors(GRID_SIZE,game_grid)
 			NoteHandler.clear_notes(row, col)
 			
 func check_puzzle_solved() -> bool:
@@ -400,3 +370,37 @@ func _on_note_toggle_pressed() -> void:
 		note_toggle.text = "Note: OFF"
 		note_toggle.set("theme_override_colors/font_focus_color" ,Color.WHITE)
 		print(note_toggle.text)
+
+
+func initialize_digit_counts():
+	# Reset
+	for i in range(digit_counts.size()):
+		digit_counts[i] = 0
+	
+	# Count pre-filled Numbers
+	for row in range(GRID_SIZE):
+		for col in range(GRID_SIZE):
+			var num = puzzle[row][col]
+			if num > 0:
+				digit_counts[num] += 1
+	
+	# Update after counting
+	update_numpad_buttons()
+
+# Func to ignore note numbers
+func update_digit_counts(number_pressed):
+	if !note_mode:
+		digit_counts[number_pressed] += 1
+		update_numpad_buttons()
+
+# decrement digit count, if removed from wrong cells
+func decrement_digit_count(number):
+	if number > 0 and number <= 9:
+		digit_counts[number] -= 1
+		update_numpad_buttons()
+
+# Disable numpad buttons
+func update_numpad_buttons():
+	for i in range(1, 10):
+		var button = $SelectGrid.get_children()[i-1]
+		button.disabled = digit_counts[i] >= 9

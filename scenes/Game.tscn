@@ -1,13 +1,12 @@
 [gd_scene load_steps=6 format=3 uid="uid://cwh3rvrytveu7"]
 
 [ext_resource type="Script" uid="uid://cl6j45efhdttb" path="res://scripts/game.gd" id="1_cdfni"]
+[ext_resource type="Theme" uid="uid://bym84v7my4448" path="res://scenes/keypad.tres" id="2_78awf"]
 [ext_resource type="Script" uid="uid://caw6uv71qvqg5" path="res://scenes/game_ui_buttons.gd" id="2_cpr0p"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_78awf"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbsmt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cpr0p"]
 
 [node name="SudookuGame" type="Node2D"]
 script = ExtResource("1_cdfni")
@@ -33,6 +32,7 @@ columns = 5
 [node name="Button" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "1"
@@ -40,6 +40,7 @@ text = "1"
 [node name="Button2" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "2"
@@ -47,6 +48,7 @@ text = "2"
 [node name="Button3" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "3"
@@ -54,6 +56,7 @@ text = "3"
 [node name="Button4" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "4"
@@ -61,6 +64,7 @@ text = "4"
 [node name="Button5" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "5"
@@ -68,6 +72,7 @@ text = "5"
 [node name="Button6" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "6"
@@ -75,6 +80,7 @@ text = "6"
 [node name="Button7" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "7"
@@ -82,6 +88,7 @@ text = "7"
 [node name="Button8" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "8"
@@ -89,6 +96,7 @@ text = "8"
 [node name="Button9" type="Button" parent="SelectGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "9"
@@ -164,6 +172,7 @@ theme_override_font_sizes/font_size = 55
 text = "Note"
 
 [node name="clear_Button" type="Button" parent="UI Buttons"]
+self_modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
 offset_left = 562.4
@@ -171,8 +180,8 @@ offset_top = 1110.2
 offset_right = 626.4
 offset_bottom = 1174.2
 scale = Vector2(1.8, 1.8)
+theme = ExtResource("2_78awf")
 theme_override_font_sizes/font_size = 34
-theme_override_styles/focus = SubResource("StyleBoxEmpty_cpr0p")
 text = "X"
 
 [connection signal="pressed" from="UI Buttons/HintButton" to="." method="_on_hint_button_pressed"]

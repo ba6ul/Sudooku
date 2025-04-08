@@ -38,39 +38,24 @@ func reset_matching_numbers(GRID_SIZE, game_grid):
 
 # Highlights ROW,COL,SUB-GRID
 func highlight_related_cells(GRID_SIZE,game_grid,pos: Vector2i):
-	reset_cell_colors(GRID_SIZE,game_grid)
+	var row = pos.x
+	var col = pos.y
 
-	var row = pos[0]
-	var col = pos[1]
-
-	# Creates Subgrid
+	# calculate SUB-GRID
 	var subgrid_row_start = int(row / 3) * 3
 	var subgrid_col_start = int(col / 3) * 3
 
-	# Loops and Checks row, col, subgrid
+	# Loop through the the "GRID_SIZE"
 	for i in range(GRID_SIZE):
 		for j in range(GRID_SIZE):
 			var btn = game_grid[i][j] as Button
-			
-			var current_bg_color = btn.get_theme_stylebox("normal").bg_color
+			btn.modulate = Settings.highlight_modulate
 
-			if i == row and j == col:
-				# Highlight Selected Button
-				btn.modulate = Settings.highlight_modulate
-			elif i == row or j == col:
-				# Highlight empty ROW and COL
-				if current_bg_color != Color.DARK_RED:
-					btn.modulate = Settings.highlight_modulate
-			elif (i >= subgrid_row_start and i < subgrid_row_start + 3 and
-				  j >= subgrid_col_start and j < subgrid_col_start + 3):
-				#Highlight sub-Grid
-				if current_bg_color !=  Color.DARK_RED:
-					btn.modulate = Settings.highlight_modulate
-
-# reset (Highlights ROW,COL,SUB-GRID)
-func reset_cell_colors(GRID_SIZE,game_grid):
-	for i in range(GRID_SIZE):
-		for j in range(GRID_SIZE):
-
-			var btn = game_grid[i][j] as Button
-			btn.modulate = Color(1, 1, 1, 1)
+		# Highlight Effect condition
+			if (i == row or j == col or
+				(i >= subgrid_row_start and i < subgrid_row_start + 3 and
+				 j >= subgrid_col_start and j < subgrid_col_start + 3)
+			):
+				btn.modulate = Settings.highlight_modulate # Highlight Effect
+			else:
+				btn.modulate = Color(1, 1, 1, 1)
