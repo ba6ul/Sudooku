@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 [gd_scene load_steps=6 format=3 uid="uid://cjqw5d1v1o8lm"]
 
 [ext_resource type="Texture2D" path="res://bg.svg" id="1_cm4eg"]
@@ -7,6 +8,8 @@
 [ext_resource type="Theme" path="res://assets/theme/MainMenu.tres" id="3_mgwij"]
 [ext_resource type="FontFile" path="res://assets/fonts/Geist-Medium.ttf" id="4_cm4eg"]
 =======
+=======
+>>>>>>> Stashed changes
 [gd_scene load_steps=6 format=3 uid="uid://b3jitxt1fbsqa"]
 
 [ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="1_cm4eg"]
@@ -14,6 +17,9 @@
 [ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="2_ylmpx"]
 [ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="3_mgwij"]
 [ext_resource type="FontFile" uid="uid://dh7yhyr3ubp8v" path="res://assets/fonts/Geist-Medium.ttf" id="4_cm4eg"]
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 [node name="About" type="Node2D"]
