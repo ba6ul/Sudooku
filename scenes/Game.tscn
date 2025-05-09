@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cl6j45efhdttb" path="res://scripts/game.gd" id="1_cpr0p"]
 [ext_resource type="Theme" uid="uid://bym84v7my4448" path="res://assets/theme/keypad.tres" id="2_78awf"]
-[ext_resource type="Script" uid="uid://caw6uv71qvqg5" path="res://scripts/game_ui_buttons.gd" id="2_cpr0p"]
+[ext_resource type="Script" path="res://scripts/game_ui_buttons.gd" id="2_cpr0p"]
 [ext_resource type="Texture2D" uid="uid://cc4niy1ecu1pc" path="res://assets/img/back-button.png" id="2_s0nni"]
 [ext_resource type="FontFile" uid="uid://djv8oiwgiopt8" path="res://assets/fonts/Geist-Black.ttf" id="3_aug50"]
 [ext_resource type="Texture2D" uid="uid://da53k5prrfrpl" path="res://assets/img/reload.png" id="4_400sg"]
