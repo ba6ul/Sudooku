@@ -12,6 +12,6 @@ The game is designed as part of a YouTube tutorial. Check out the complete video
 
 ## Screenshots
 
-![Demo 1](./sceenshots/1.jpg)
+![Demo 1](./ss01.png)
 
-![Demo 2](./sceenshots/2.jpg)
+![Demo 2](./ss02.png)
