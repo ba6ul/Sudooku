@@ -1,0 +1,107 @@
+[gd_scene load_steps=6 format=3 uid="uid://cjqw5d1v1o8lm"]
+
+[ext_resource type="Texture2D" path="res://bg.svg" id="1_cm4eg"]
+[ext_resource type="Script" path="res://scripts/about.gd" id="1_lloox"]
+[ext_resource type="FontFile" path="res://assets/fonts/Takota.ttf" id="2_ylmpx"]
+[ext_resource type="Theme" path="res://assets/theme/MainMenu.tres" id="3_mgwij"]
+[ext_resource type="FontFile" path="res://assets/fonts/Geist-Medium.ttf" id="4_cm4eg"]
+
+[node name="About" type="Node2D"]
+script = ExtResource("1_lloox")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_cm4eg")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+z_index = 2
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -286.0
+offset_top = 126.0
+offset_right = 286.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_ylmpx")
+theme_override_font_sizes/font_size = 135
+text = "About"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -93.0
+offset_top = 400.0
+offset_right = 93.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "This is an open-source project
+which you can check out 
+on GitHub"
+
+[node name="LinkButton" type="LinkButton" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "GitHub Repository"
+uri = "https://github.com/ba6ul/Sudooku/tree/master"
+
+[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_cm4eg")
+theme_override_font_sizes/font_size = 50
+text = "Planned Updates"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "•
+•
+•
+•
+•
+•
+•"
+
+[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Complete Win/Lose Screen
+Complete About Scene
+Loading Scene
+Settings Scene
+Feedback button"
+
+[node name="Button" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_mgwij")
+theme_override_font_sizes/font_size = 81
+text = "Back"
+
+[node name="Button2" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_mgwij")
+theme_override_font_sizes/font_size = 81
+text = "Feedback"
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Button2" to="." method="_on_feedback_pressed"]
