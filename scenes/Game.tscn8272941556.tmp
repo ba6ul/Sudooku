@@ -1,0 +1,182 @@
+[gd_scene load_steps=6 format=3 uid="uid://cwh3rvrytveu7"]
+
+[ext_resource type="Script" uid="uid://cl6j45efhdttb" path="res://scripts/game.gd" id="1_cdfni"]
+[ext_resource type="Script" uid="uid://caw6uv71qvqg5" path="res://scenes/game_ui_buttons.gd" id="2_cpr0p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_78awf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbsmt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cpr0p"]
+
+[node name="SudookuGame" type="Node2D"]
+script = ExtResource("1_cdfni")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+offset_left = 27.0
+offset_top = 161.0
+offset_right = 67.0
+offset_bottom = 201.0
+scale = Vector2(1.3, 1.3)
+columns = 9
+
+[node name="SelectGrid" type="GridContainer" parent="."]
+offset_left = 44.0
+offset_top = 977.0
+offset_right = 684.0
+offset_bottom = 1041.0
+scale = Vector2(1.8, 1.8)
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 10
+columns = 5
+
+[node name="Button" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "1"
+
+[node name="Button2" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "2"
+
+[node name="Button3" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "3"
+
+[node name="Button4" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "4"
+
+[node name="Button5" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "5"
+
+[node name="Button6" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "6"
+
+[node name="Button7" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "7"
+
+[node name="Button8" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "8"
+
+[node name="Button9" type="Button" parent="SelectGrid"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
+text = "9"
+
+[node name="Button" type="Button" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qbsmt")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 232.0
+offset_top = 25.0
+offset_right = 475.0
+offset_bottom = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(-155, -90)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 45
+text = "Lives left: 3"
+
+[node name="UI Buttons" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_cpr0p")
+
+[node name="HintButton" type="Button" parent="UI Buttons"]
+layout_mode = 0
+offset_left = 396.0
+offset_top = 881.0
+offset_right = 685.0
+offset_bottom = 965.0
+theme_override_font_sizes/font_size = 55
+text = "Hint"
+
+[node name="Back" type="Button" parent="UI Buttons"]
+layout_mode = 0
+offset_left = 44.0
+offset_top = 25.0
+offset_right = 117.0
+offset_bottom = 102.0
+theme_override_font_sizes/font_size = 45
+text = "<"
+
+[node name="Reload" type="Button" parent="UI Buttons"]
+layout_mode = 0
+offset_left = 612.0
+offset_top = 25.0
+offset_right = 684.0
+offset_bottom = 96.0
+theme_override_font_sizes/font_size = 45
+text = "R"
+
+[node name="note_toggle" type="Button" parent="UI Buttons"]
+layout_mode = 0
+offset_left = 44.0
+offset_top = 881.0
+offset_right = 324.0
+offset_bottom = 965.0
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 55
+text = "Note"
+
+[node name="clear_Button" type="Button" parent="UI Buttons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = 562.4
+offset_top = 1110.2
+offset_right = 626.4
+offset_bottom = 1174.2
+scale = Vector2(1.8, 1.8)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cpr0p")
+text = "X"
+
+[connection signal="pressed" from="UI Buttons/HintButton" to="." method="_on_hint_button_pressed"]
+[connection signal="pressed" from="UI Buttons/Back" to="UI Buttons" method="_on_back_pressed"]
+[connection signal="pressed" from="UI Buttons/Reload" to="UI Buttons" method="_on_reload_pressed"]
+[connection signal="pressed" from="UI Buttons/note_toggle" to="." method="_on_note_toggle_pressed"]
+[connection signal="pressed" from="UI Buttons/clear_Button" to="." method="_on_clear_button_pressed"]

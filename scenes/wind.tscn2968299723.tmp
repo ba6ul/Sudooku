@@ -1,23 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4g5tmmy3rdkt"]
+[gd_scene load_steps=5 format=3 uid="uid://c4g5tmmy3rdkt"]
 
-[ext_resource type="Script" uid="uid://qpqtimibc3je" path="res://scripts/win_scene.gd" id="1_b6ng8"]
-[ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="2_1a68o"]
-[ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="3_qcp0s"]
-[ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="4_3vslu"]
-[ext_resource type="Texture2D" uid="uid://cc6m2xh6b3nig" path="res://assets/img/sound-on.png" id="5_r38tj"]
+[ext_resource type="Script" uid="uid://qpqtimibc3je" path="res://scenes/win2d.gd" id="1_2kodj"]
+[ext_resource type="Texture2D" uid="uid://cc6m2xh6b3nig" path="res://assets/img/sound-on.png" id="1_p78np"]
+[ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://svgviewer-output.svg" id="1_yawee"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rdwks"]
-bg_color = Color(0.399676, 0.00203016, 0.798556, 1)
 
 [node name="Wind" type="Control"]
-layout_direction = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_b6ng8")
+script = ExtResource("1_2kodj")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -26,13 +22,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_1a68o")
+texture = ExtResource("1_yawee")
 expand_mode = 4
 
-[node name="solved_grid" type="Label" parent="."]
-layout_mode = 0
+[node name="Grid" type="Control" parent="."]
+anchors_preset = 0
 offset_right = 40.0
-offset_bottom = 23.0
+offset_bottom = 40.0
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(500, 500)
@@ -69,7 +65,6 @@ layout_mode = 2
 
 [node name="Congrats" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("3_qcp0s")
 theme_override_font_sizes/font_size = 72
 text = "Congrats"
 horizontal_alignment = 1
@@ -89,25 +84,20 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 35)
 layout_mode = 2
-theme_override_constants/separation = 80
 alignment = 1
 
 [node name="Button" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
-visible = false
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
-theme = ExtResource("4_3vslu")
 text = "Restart"
 
-[node name="main_menu" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="Button3" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
-theme = ExtResource("4_3vslu")
 theme_override_font_sizes/font_size = 20
 text = "Main Menue"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -124,17 +114,9 @@ alignment = 2
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 toggle_mode = true
-texture_normal = ExtResource("5_r38tj")
+texture_normal = ExtResource("1_p78np")
 
 [node name="Settings" type="TextureButton" parent="HBoxContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
-texture_normal = ExtResource("5_r38tj")
-
-[node name="Control" type="Control" parent="."]
-visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/main_menu" to="." method="_on_main_menu_pressed"]
+texture_normal = ExtResource("1_p78np")

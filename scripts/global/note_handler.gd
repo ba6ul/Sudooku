@@ -49,9 +49,12 @@ func get_formatted_note_text(row: int, col: int) -> String:
 	}
 	
 	# Placing notes in their grid positions
-	for number in note_grid[row][col].keys():
+	var keys = note_grid[row][col].keys()
+	keys.sort()
+	for number in keys:
 		var pos = note_positions[number]
 		note_grid_text[pos[0]][pos[1]] = str(number)
+
 	
 	# Combining grid to string with fixed spacing
 	var formatted_notes = ""

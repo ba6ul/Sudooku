@@ -1,11 +1,12 @@
 extends Node2D
+const no_font = preload("res://assets/fonts/Geist-Medium.ttf")
 
-const WinScene = preload("res://scenes/win_scene.gd")
-@onready var grid:GridContainer = $GridContainer
+@onready var number_pad: GridContainer = $CanvasLayer/NumberPad
+@onready var grid:GridContainer = $CanvasLayer/GridContainer
 @onready var button: Button = $Button
-@onready var lives_label: Label = $Label
-@onready var hint_button: Button = $"UI Buttons/HintButton"
-@onready var note_toggle: Button = $"UI Buttons/note_toggle"
+@onready var lives_label: Label = $CanvasLayer/MarginContainer2/HBoxContainer/Label
+@onready var hint_button: Button = $CanvasLayer/MarginContainer3/HBoxContainer/HintButton
+@onready var note_toggle: Button = $CanvasLayer/MarginContainer3/HBoxContainer/note_toggle
 
 var hint_system = HintSystem.new()
 var highlighter = Highlighter.new()
@@ -16,9 +17,11 @@ var lives = 15
 
 # Game Grid
 var game_grid = [] # Holds the buttons present in the Game Scene
-var puzzle = [] # Holds the puzzle
+var puzzle = [] 
 var solution_grid = [] # Holds the answer to the puzzle
 var solution_count = 0 # No. of valid solution to a solution grid, used only for generating valid grid
+
+
 
 var digit_counts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # Track occurrences of each digit (1-9,index 0 unused)
 
@@ -45,6 +48,7 @@ func init_game():
 	_fill_grid(solution_grid) # We will get the solution grid
 	_create_puzzle(Settings.DIFFICULTY)
 	_populate_grid()
+	Settings.set_2d_array(solution_grid)
 	
 
 func _populate_grid():
@@ -63,31 +67,34 @@ func create_button(pos:Vector2i):
 	
 	var button = Button.new()
 	button.focus_mode = Control.FOCUS_NONE
-	var style = StyleBoxFlat.new()
-	style.corner_radius_top_left = 8
-	style.corner_radius_top_right = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
-	button.add_theme_stylebox_override("normal", style)
 
+	var style = StyleBoxFlat.new()
+	style.set_border_width_all(0)
+	
+	style.border_color = Color(1, 1, 1)
+
+	style.corner_radius_top_left = 20
+	style.corner_radius_top_right = 20
+	style.corner_radius_bottom_left = 20
+	style.corner_radius_bottom_right = 20
+	button.add_theme_stylebox_override("normal", style)
+	button.add_theme_font_override("font", no_font)
+	
 	if puzzle[row][col] != 0:
-		
-		#theme for Pre-fill cell (color is temp)
+		# Theme for pre-filled cells
 		var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
 		stylebox.bg_color = Settings.Cell_rang
 		button.add_theme_stylebox_override("normal", stylebox)
-		#Pre=fill NO
 		button.text = str(puzzle[row][col])
 	else:
-		#theme for empty cells 
+		# Theme for empty cells 
 		var stylebox:StyleBoxFlat = button.get_theme_stylebox("normal").duplicate(true)
 		stylebox.bg_color = Settings.empty_Cell_rang
 		button.add_theme_stylebox_override("normal", stylebox)
 		
-	
 	button.set("theme_override_font_sizes/font_size", 32)
 	
-	#v3 Adds gap
+	#Add visual gap between 3x3 subgrids
 	var gap_size = 8
 	var gap_Container = MarginContainer.new()
 	# Row Gap
@@ -99,46 +106,42 @@ func create_button(pos:Vector2i):
 	gap_Container.add_child(button)
 	grid.add_child(gap_Container)
 	
-	button.custom_minimum_size = Vector2(52, 52) #Setting the button size
+	button.custom_minimum_size = Vector2(72, 72) #Setting the button size
 	button.pressed.connect(_on_grid_button_pressed.bind(pos, ans))	#grid button press signal
 	return button
-
+	
+# Single cell press events
 func _on_grid_button_pressed(pos: Vector2i, ans):
 	selected_button = pos
 	select_button_answer = ans
-	highlighter.highlight_related_cells(GRID_SIZE,game_grid,pos)
-	var grid_selected_button = game_grid[selected_button[0]][selected_button[1]]
-		
-		
-	# Disable Numbers logic
-	if grid_selected_button.text != "" and puzzle[pos[0]][pos[1]] != 0:
-		# Disable for pre-filled cells
-		for button in $SelectGrid.get_children():
-			button.disabled = true
-	elif grid_selected_button.text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == 32 and int(grid_selected_button.text) == solution_grid[pos[0]][pos[1]]:
-		# Disable for Correct ans
-		for button in $SelectGrid.get_children():
-			button.disabled = true
-	else:
-		update_numpad_buttons()
-			
-			
-	# highlight same numbers matching instances
-	if grid_selected_button.text != "":
-		var number_to_highlight = 0
-		# Check if it's a note or a regular number
-		if grid_selected_button.get("theme_override_font_sizes/font_size") == 32:
-			number_to_highlight = int(grid_selected_button.text)
-		highlighter.highlight_related_cells(GRID_SIZE,game_grid,pos)
-		highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_to_highlight)
-	else:
-		# Just highlight related cells if no number
-		highlighter.highlight_related_cells(GRID_SIZE,game_grid,pos)
 	
+	var grid_selected_button = game_grid[pos.x][pos.y]
+	var button_text = grid_selected_button.text
+	
+	# Checks
+	var is_prefilled = puzzle[pos.x][pos.y] != 0
+	var is_correct_text = button_text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == 32 and int(button_text) == solution_grid[pos.x][pos.y]
+	
+	var is_marked_correct = false
+	if grid_selected_button.has_theme_color_override("bg_color"):
+		is_marked_correct = grid_selected_button.get("theme_override_colors/bg_color") == Settings.Cell_rang_correct
+
+	if is_prefilled or is_correct_text or is_marked_correct:
+		disable_numberpad(true)
+	else:
+		disable_numberpad(false)
+		update_numpad_buttons()
+
+	# Highlighting
+	if button_text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == 32:
+		var number_to_highlight = int(button_text)
+		highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_to_highlight)
+	
+	highlighter.highlight_related_cells(GRID_SIZE, game_grid, pos)
 
 
 func bind_selectgrid_button_actions():
-	for button in $SelectGrid.get_children():
+	for button in number_pad.get_children():
 		var b = button as Button
 		b.pressed.connect(_on_selectgrid_button_pressed.bind(int(b.text)))
 
@@ -175,7 +178,7 @@ func _on_selectgrid_button_pressed(number_pressed):
 					var stylebox:StyleBoxFlat = btn.get_theme_stylebox("normal").duplicate(true)
 					if result_match == true:
 						stylebox.bg_color = Settings.Cell_rang_correct #Color.SEA_GREEN 
-						
+						disable_numberpad(true)
 					else:
 						stylebox.bg_color = Color.DARK_RED
 						lives -= 1
@@ -189,9 +192,11 @@ func _on_selectgrid_button_pressed(number_pressed):
 		# Make sure to highlight the cell back after new Input
 		highlighter.highlight_related_cells(GRID_SIZE,game_grid,selected_button)
 	update_digit_counts(number_pressed)
+	highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_pressed)
+
 
 func lives_update():
-	lives_label.text = "Lives left " + str(lives)
+		lives_label.text = "Lives left " + str(lives)
 
 # Generating Valid Sudoku grid
 # Recursively validate a position entry and generates a solution grid
@@ -327,24 +332,29 @@ func _on_hint_button_pressed() -> void:
 
 func _on_clear_button_pressed() -> void:
 	if selected_button != Vector2i(-1, -1):
-		var row = selected_button[0]
-		var col = selected_button[1]
-		var grid_selected_button = game_grid[row][col]
+			var row = selected_button[0]
+			var col = selected_button[1]
+			var grid_selected_button = game_grid[row][col]
 
-		# Ensure only editable cells can be cleared and prevent clearing correct answers
-		if puzzle[row][col] == 0 and grid_selected_button.text != str(solution_grid[row][col]):
-			#retrieve celaring number and decrement_digit_count before clearing
-			if grid_selected_button.text != "":
-				var cleared_number = int(grid_selected_button.text)
-				decrement_digit_count(cleared_number)
+			# Ensure only editable cells can be cleared
+			if puzzle[row][col] == 0 and grid_selected_button.text != "":
+				# Check if the entry being cleared was correct before decrementing
+				if grid_selected_button.text != "" and !grid_selected_button.text.contains("\n"):
+					var cleared_number = int(grid_selected_button.text)
+					# Only decrement if it was correct
+					if cleared_number == solution_grid[row][col]:
+						digit_counts[cleared_number] -= 1
 				
-			#Sets wrong ans(red) bg to normal
-			var stylebox:StyleBoxFlat = grid_selected_button.get_theme_stylebox("normal").duplicate(true)
-			stylebox.bg_color = Settings.empty_Cell_rang
-			grid_selected_button.add_theme_stylebox_override("normal", stylebox)
-			
-			grid_selected_button.text = ""
-			NoteHandler.clear_notes(row, col)
+				# Reset the cell styling
+				var stylebox:StyleBoxFlat = grid_selected_button.get_theme_stylebox("normal").duplicate(true)
+				stylebox.bg_color = Settings.empty_Cell_rang
+				grid_selected_button.add_theme_stylebox_override("normal", stylebox)
+				
+				grid_selected_button.text = ""
+				NoteHandler.clear_notes(row, col)
+				
+				# Make sure to update numpad buttons after clearing
+				update_numpad_buttons()
 			
 func check_puzzle_solved() -> bool:
 	for i in range(GRID_SIZE):
@@ -377,30 +387,47 @@ func initialize_digit_counts():
 	for i in range(digit_counts.size()):
 		digit_counts[i] = 0
 	
-	# Count pre-filled Numbers
+	# Count pre-filled Numbers (which are always correct)
 	for row in range(GRID_SIZE):
 		for col in range(GRID_SIZE):
 			var num = puzzle[row][col]
 			if num > 0:
 				digit_counts[num] += 1
 	
-	# Update after counting
+	# Update buttons after counting
 	update_numpad_buttons()
 
 # Func to ignore note numbers
 func update_digit_counts(number_pressed):
 	if !note_mode:
-		digit_counts[number_pressed] += 1
-		update_numpad_buttons()
+		# Only increment if the number is placed correctly
+		if selected_button != Vector2i(-1, -1):
+			var row = selected_button[0]
+			var col = selected_button[1]
+			if solution_grid[row][col] == number_pressed:
+				digit_counts[number_pressed] += 1
+				update_numpad_buttons()
+			else:
+				# If it's an incorrect entry, don't count it
+				# We still update the display for consistency
+				update_numpad_buttons()
 
 # decrement digit count, if removed from wrong cells
 func decrement_digit_count(number):
 	if number > 0 and number <= 9:
-		digit_counts[number] -= 1
+		var row = selected_button[0]
+		var col = selected_button[1]
+		# Only decrement if it was a correct placement being removed
+		if solution_grid[row][col] == number:
+			digit_counts[number] -= 1
 		update_numpad_buttons()
 
 # Disable numpad buttons
 func update_numpad_buttons():
 	for i in range(1, 10):
-		var button = $SelectGrid.get_children()[i-1]
+		var button = number_pad.get_children()[i-1]
 		button.disabled = digit_counts[i] >= 9
+		
+func disable_numberpad(disabled: bool):
+	for button in number_pad.get_children():
+		button.disabled = disabled

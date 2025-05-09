@@ -13,22 +13,23 @@ config_version=5
 config/name="Sudoku"
 run/main_scene="uid://b8cfij1hitehy"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.160784, 0.160784, 0.152941, 1)
+boot_splash/show_image=false
+config/icon="uid://br0cwvcxrf425"
 
 [autoload]
 
-Settings="*res://scripts/settings.gd"
-NoteHandler="*res://scripts/note_handler.gd"
+Settings="*res://scripts/global/settings.gd"
+NoteHandler="*res://scripts/global/note_handler.gd"
 
 [display]
 
 window/size/viewport_width=720
 window/size/viewport_height=1280
-window/size/mode=1
 window/size/resizable=false
 window/size/window_width_override=360
-window/size/window_height_override=640
-window/stretch/mode="canvas_items"
+window/size/window_height_override=720
+window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
 

@@ -1,0 +1,96 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8cfij1hitehy"]
+
+[sub_resource type="GDScript" id="GDScript_ukcvp"]
+script/source = "extends Node2D
+
+@onready var start_button = $Play
+@onready var options_button = $Exit
+
+func _ready() -> void:
+	\"res://scripts/settings.gd\"
+func _on_button_pressed() -> void:
+	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
+
+
+func _on_button_2_pressed() -> void:
+	get_tree().quit()
+
+
+func _on_hard_pressed() -> void:
+	Settings.DIFFICULTY = 3
+	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
+	
+
+
+func _on_expert_pressed() -> void:
+	Settings.DIFFICULTY = 4
+	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
+	
+
+
+func _on_easy_pressed() -> void:
+	Settings.DIFFICULTY = 2
+	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
+
+
+func _on_master_pressed() -> void:
+	Settings.DIFFICULTY = 5
+	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
+"
+
+[node name="MainMenu" type="Node2D"]
+script = SubResource("GDScript_ukcvp")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 121.0
+offset_top = 139.0
+offset_right = 545.0
+offset_bottom = 276.0
+theme_override_font_sizes/font_size = 100
+text = "Sudooku"
+
+[node name="Easy" type="Button" parent="."]
+offset_left = 224.0
+offset_top = 365.0
+offset_right = 408.0
+offset_bottom = 452.0
+theme_override_font_sizes/font_size = 55
+text = "Simple"
+
+[node name="Hard" type="Button" parent="."]
+offset_left = 224.0
+offset_top = 522.0
+offset_right = 408.0
+offset_bottom = 609.0
+theme_override_font_sizes/font_size = 55
+text = "Hard"
+
+[node name="Expert" type="Button" parent="."]
+offset_left = 224.0
+offset_top = 666.0
+offset_right = 408.0
+offset_bottom = 753.0
+theme_override_font_sizes/font_size = 55
+text = "Expert"
+
+[node name="Master" type="Button" parent="."]
+offset_left = 224.0
+offset_top = 666.0
+offset_right = 408.0
+offset_bottom = 753.0
+theme_override_font_sizes/font_size = 55
+text = "Expert"
+
+[node name="Exit" type="Button" parent="."]
+offset_left = 225.0
+offset_top = 1028.0
+offset_right = 409.0
+offset_bottom = 1116.0
+theme_override_font_sizes/font_size = 45
+text = "Exit"
+
+[connection signal="pressed" from="Easy" to="." method="_on_easy_pressed"]
+[connection signal="pressed" from="Hard" to="." method="_on_hard_pressed"]
+[connection signal="pressed" from="Expert" to="." method="_on_expert_pressed"]
+[connection signal="pressed" from="Master" to="." method="_on_master_pressed"]
+[connection signal="pressed" from="Exit" to="." method="_on_button_2_pressed"]

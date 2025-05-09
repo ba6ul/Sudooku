@@ -1,18 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8cfij1hitehy"]
+[gd_scene load_steps=10 format=3 uid="uid://b8cfij1hitehy"]
 
-[ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://scenes/MainMenu.tres" id="1_yqorp"]
+[ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="1_0ykhv"]
+[ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="1_yqorp"]
+[ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="2_2wh52"]
+[ext_resource type="FontFile" uid="uid://dk4gsd157b561" path="res://assets/fonts/Geist-Regular.ttf" id="4_l72w3"]
+[ext_resource type="Texture2D" uid="uid://cehq7ccrdruqo" path="res://assets/img/about.png" id="5_826wr"]
 
 [sub_resource type="GDScript" id="GDScript_ukcvp"]
 script/source = "extends Node2D
 
-@onready var start_button = $Play
-@onready var options_button = $Exit
+#@onready var start_button = $Play
+#@onready var options_button = $Exit
+
 
 func _ready() -> void:
 	\"res://scripts/settings.gd\"
 func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
-
+\"res://assets/img/icon.png\"
 
 func _on_button_2_pressed() -> void:
 	get_tree().quit()
@@ -38,28 +43,76 @@ func _on_easy_pressed() -> void:
 func _on_master_pressed() -> void:
 	Settings.DIFFICULTY = 5
 	get_tree().change_scene_to_file(\"res://scenes/Game.tscn\")
+
+
+func _on_about_button_pressed() -> void:
+	get_tree().change_scene_to_file(\"res://scenes/about.tscn\")
 "
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l72w3"]
+bg_color = Color(0.176122, 0.000761833, 0.0372843, 1)
+border_width_bottom = 18
+border_color = Color(0.0829823, 0, 0.0113304, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_left = 30.0
+expand_margin_top = 2.0
+expand_margin_right = 30.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_826wr"]
+bg_color = Color(0.231373, 0.0823529, 0.470588, 1)
+border_width_bottom = 18
+border_color = Color(0.183, 0.0586812, 0.382038, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_left = 30.0
+expand_margin_top = 2.0
+expand_margin_right = 30.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="Theme" id="Theme_7la6k"]
+default_font = ExtResource("4_l72w3")
+Button/styles/focus = SubResource("StyleBoxFlat_l72w3")
+Button/styles/hover = SubResource("StyleBoxFlat_l72w3")
+Button/styles/normal = SubResource("StyleBoxFlat_l72w3")
+Button/styles/pressed = SubResource("StyleBoxFlat_826wr")
 
 [node name="MainMenu" type="Node2D"]
 script = SubResource("GDScript_ukcvp")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_right = 720.0
-offset_bottom = 1280.0
-color = Color(0.0901961, 0.0941176, 0.0901961, 1)
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Label" type="Label" parent="ColorRect"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_0ykhv")
+expand_mode = 4
+
+[node name="Label" type="Label" parent="CanvasLayer"]
 z_index = 2
-layout_mode = 2
-offset_left = 64.0
-offset_top = 168.0
-offset_right = 640.0
-offset_bottom = 320.0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -286.0
+offset_top = 126.0
+offset_right = 286.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_2wh52")
 theme_override_font_sizes/font_size = 135
-text = "Sudooku"
+text = "Sudoku"
+horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect"]
-layout_mode = 1
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
@@ -72,39 +125,51 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 70
 
-[node name="Easy" type="Button" parent="ColorRect/VBoxContainer"]
+[node name="Easy" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_yqorp")
 theme_override_font_sizes/font_size = 55
 text = "Simple"
 
-[node name="Hard" type="Button" parent="ColorRect/VBoxContainer"]
+[node name="Hard" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme = ExtResource("1_yqorp")
 theme_override_font_sizes/font_size = 55
 text = "Hard"
 
-[node name="Expert" type="Button" parent="ColorRect/VBoxContainer"]
+[node name="Expert" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_yqorp")
 theme_override_font_sizes/font_size = 55
 text = "Expert"
 
-[node name="Master" type="Button" parent="ColorRect/VBoxContainer"]
+[node name="Master" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_yqorp")
 theme_override_font_sizes/font_size = 55
 text = "Master"
 
-[node name="Exit" type="Button" parent="ColorRect/VBoxContainer"]
-modulate = Color(0.726208, 0.055199, 0.303172, 1)
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_yqorp")
+theme_override_constants/separation = 80
+
+[node name="Exit" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_7la6k")
 theme_override_font_sizes/font_size = 45
 text = "Exit"
 
-[connection signal="pressed" from="ColorRect/VBoxContainer/Easy" to="." method="_on_easy_pressed"]
-[connection signal="pressed" from="ColorRect/VBoxContainer/Hard" to="." method="_on_hard_pressed"]
-[connection signal="pressed" from="ColorRect/VBoxContainer/Expert" to="." method="_on_expert_pressed"]
-[connection signal="pressed" from="ColorRect/VBoxContainer/Master" to="." method="_on_master_pressed"]
-[connection signal="pressed" from="ColorRect/VBoxContainer/Exit" to="." method="_on_button_2_pressed"]
+[node name="About" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_yqorp")
+theme_override_font_sizes/font_size = 45
+text = "About"
+icon = ExtResource("5_826wr")
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Easy" to="." method="_on_easy_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Hard" to="." method="_on_hard_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Expert" to="." method="_on_expert_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Master" to="." method="_on_master_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/Exit" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/About" to="." method="_on_about_button_pressed"]

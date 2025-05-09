@@ -1,5 +1,5 @@
 extends Control
-@onready var note_toggle: Button = $note_toggle
+@onready var note_toggle: Button = $"../CanvasLayer/MarginContainer3/HBoxContainer/note_toggle"
 
 #Buttons
 func _on_back_pressed() -> void:
