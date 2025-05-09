@@ -1,8 +1,6 @@
-<<<<<<< Updated upstream
-[gd_scene load_steps=2 format=3 uid="uid://bgwx0e08iafpa"]
-=======
+
 [gd_scene load_steps=2 format=3 uid="uid://cyqmos5su8o1l"]
->>>>>>> Stashed changes
+
 
 [sub_resource type="GDScript" id="GDScript_r7mh8"]
 script/source = "extends Node2D
