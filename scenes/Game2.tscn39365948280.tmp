@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://d38dtci0nlour"]
-
-[ext_resource type="Script" uid="uid://cyi5mh4ib6nry" path="res://scenes/game_2.gd" id="1_akvk8"]
-
-[node name="SudookuGame" type="Node2D"]
-script = ExtResource("1_akvk8")
