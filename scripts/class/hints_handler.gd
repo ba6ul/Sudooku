@@ -17,7 +17,7 @@ var hint_strategy: int = 2  # hin version selector
 # Hint versions
 enum HintMode {
 	random_cell,    # Fills a random empty cell
-	hardest_cell, # Premium Hint
+	hardest_cell,	# Premium Hint
 	strategic       # Advanced hint selection
 }
 

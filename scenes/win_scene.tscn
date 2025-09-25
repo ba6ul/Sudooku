@@ -1,8 +1,6 @@
-
 [gd_scene load_steps=7 format=3 uid="uid://c4g5tmmy3rdkt"]
 
-[ext_resource type="Script" uid="uid://qpqtimibc3je" path="res://scripts/win_scene.gd" id="1_b6ng8"]
-
+[ext_resource type="Script" path="res://scripts/win_scene.gd" id="1_b6ng8"]
 [ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="2_1a68o"]
 [ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="3_qcp0s"]
 [ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="4_3vslu"]
