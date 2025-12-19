@@ -5,21 +5,13 @@
     <h1><b>Sudooku</b></h1>
     <p><i>A sleek, modern Sudoku experience built with Godot 4</i></p>
   <p>
-    <a href="https://www.youtube.com/@kgyakb" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/YouTube-kgykab-FF0000?logo=youtube&logoColor=white" alt="YouTube Channel" />
-    </a>
-    <a href="https://linkedin.com/in/ba6ul" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/LinkedIn-ba6ul-0077B5?logo=linkedin&logoColor=white" alt="LinkedIn Profile" />
-    </a>
-    <a href="https://instagram.com/ba6ul" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/Instagram-@ba6ul-E4405F?logo=instagram&logoColor=white" alt="Instagram @ba6ul" />
-    </a>
+    <a href="https://www.youtube.com/@kgyakb" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/YouTube-kgykab-FF0000?logo=youtube&logoColor=white" alt="YouTube Channel" /></a>
+    <a href="https://linkedin.com/in/ba6ul" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/LinkedIn-ba6ul-0077B5?logo=linkedin&logoColor=white" alt="LinkedIn Profile" /></a>
+    <a href="https://instagram.com/ba6ul" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Instagram-@ba6ul-E4405F?logo=instagram&logoColor=white" alt="Instagram @ba6ul" /></a>
     <img src="https://img.shields.io/github/stars/ba6ul/sudooku?style=social" alt="GitHub Stars" />
     <img src="https://img.shields.io/github/license/ba6ul/sudooku" alt="License" />
   </p>
-  <a href="https://play.google.com/store/apps/details?id=com.hapgames.sudoku&hl=en" target="_blank">
-    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="64" alt="Get it on Google Play" />
-  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.hapgames.sudoku&hl=en" target="_blank"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="64"alt="Get it on Google Play" /></a>
 </div>
 
 ---
