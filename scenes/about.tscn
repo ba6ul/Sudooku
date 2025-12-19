@@ -1,12 +1,10 @@
-
 [gd_scene load_steps=6 format=3 uid="uid://b3jitxt1fbsqa"]
 
 [ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="1_cm4eg"]
-[ext_resource type="Script" uid="uid://crdlu758uhqad" path="res://scripts/about.gd" id="1_lloox"]
+[ext_resource type="Script" path="res://scripts/about.gd" id="1_lloox"]
 [ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="2_ylmpx"]
 [ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="3_mgwij"]
 [ext_resource type="FontFile" uid="uid://dh7yhyr3ubp8v" path="res://assets/fonts/Geist-Medium.ttf" id="4_cm4eg"]
-
 
 [node name="About" type="Node2D"]
 script = ExtResource("1_lloox")
@@ -43,22 +41,30 @@ anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -93.0
-offset_top = 400.0
-offset_right = 93.0
-offset_bottom = 400.0
+offset_left = -335.5
+offset_top = 300.0
+offset_right = 335.5
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 25
 
 [node name="Label" type="Label" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
-text = "This is an open-source project
-which you can check out 
-on GitHub"
+text = "Sudooku is an open-source 
+Godot project I created, 
+hosted on GitHub."
+vertical_alignment = 3
+
+[node name="Label3" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Backgroud music : soundimage.org"
+vertical_alignment = 3
 
 [node name="LinkButton" type="LinkButton" parent="CanvasLayer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "GitHub Repository"
 uri = "https://github.com/ba6ul/Sudooku/tree/master"
