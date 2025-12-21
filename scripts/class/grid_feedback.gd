@@ -4,7 +4,8 @@ extends Node
 const ANIME_TYPE = Tween.TRANS_QUART
 const EASE_TYPE = Tween.EASE_OUT
 
-func play_correct_flash(btn: Button, final_color: Color):
+#rename it to flash and animation
+func play_correct_anime(btn: Button, final_color: Color):
 	var stylebox = btn.get_theme_stylebox("normal")
 	btn.pivot_offset = btn.custom_minimum_size / 2
 	var tween = btn.create_tween().set_parallel(true)
@@ -24,5 +25,13 @@ func anime_completion(buttons:Array, pivot_index: int):
 		var delay = distance * 0.05
 		
 		var timer = btn.get_tree().create_timer(delay)
-		timer.timeout.connect(func(): play_correct_flash(btn, Color.WHITE))
+		timer.timeout.connect(func(): play_correct_anime(btn, Color.WHITE))
 		
+func play_incorrect_anime(btn:Button):
+	var original_pos = btn.position
+	var tween = btn.create_tween()
+	
+	for i in range(4):
+		tween.tween_property(btn, "position", original_pos + Vector2(5,0), 0.05)
+		tween.tween_property(btn, "position", original_pos + Vector2(-5, 0), 0.05)
+	tween.tween_property(btn, "position", original_pos, 0.05)

@@ -253,12 +253,17 @@ func _on_selectgrid_button_pressed(number_pressed):
 					
 					var stylebox:StyleBoxFlat = btn.get_theme_stylebox("normal").duplicate(true)
 					if result_match == true:
-						#Correct Ans animation
-						var flash_color = Color.WHITE #May Change to Green
+						
+						#Correct Value animation
+						var flash_color = Color.LAWN_GREEN 
 						stylebox.bg_color = flash_color
 						var tween = create_tween()
 						tween.tween_property(stylebox, "bg_color", Settings.Cell_rang, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 						disable_numberpad(true)
+						
+						# Haptic Feedback for Correct Answer
+						if OS.has_feature("mobile"):
+							Input.vibrate_handheld(20)
 						
 						if is_row_complete(row):
 							var row_btns = []
@@ -268,6 +273,7 @@ func _on_selectgrid_button_pressed(number_pressed):
 					else:
 						stylebox.bg_color = Color.DARK_RED
 						lives -= 1
+						grid_feedback.play_incorrect_anime(btn)
 						
 					if lives == 0:
 						get_tree().reload_current_scene()
