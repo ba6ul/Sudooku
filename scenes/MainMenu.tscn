@@ -1,11 +1,11 @@
 [gd_scene load_steps=11 format=3 uid="uid://b8cfij1hitehy"]
 
-[ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="1_0ykhv"]
+[ext_resource type="Texture2D" uid="uid://b82vmghrl35eq" path="res://bg.svg" id="1_0ykhv"]
 [ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="1_yqorp"]
-[ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="2_2wh52"]
-[ext_resource type="FontFile" uid="uid://dk4gsd157b561" path="res://assets/fonts/Geist-Regular.ttf" id="4_l72w3"]
-[ext_resource type="Texture2D" uid="uid://cehq7ccrdruqo" path="res://assets/img/about.png" id="5_826wr"]
-[ext_resource type="AudioStream" uid="uid://m8cejlpct6x0" path="res://assets/music/Puzzle-Game-3_Looping.mp3" id="6_826wr"]
+[ext_resource type="FontFile" uid="uid://pp6rkcr31pq6" path="res://assets/fonts/Takota.ttf" id="2_2wh52"]
+[ext_resource type="FontFile" uid="uid://ha3e5up3nt73" path="res://assets/fonts/Geist-Regular.ttf" id="4_l72w3"]
+[ext_resource type="Texture2D" uid="uid://b2fm4jsqo6nt8" path="res://assets/img/about.png" id="5_826wr"]
+[ext_resource type="AudioStream" uid="uid://ceryilj01semh" path="res://assets/music/Puzzle-Game-3_Looping.mp3" id="6_826wr"]
 
 [sub_resource type="GDScript" id="GDScript_ukcvp"]
 script/source = "extends Node2D

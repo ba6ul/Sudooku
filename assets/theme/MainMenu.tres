@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=4 format=3 uid="uid://c38rj6xd6og8i"]
 
-[ext_resource type="FontFile" uid="uid://dk4gsd157b561" path="res://assets/fonts/Geist-Regular.ttf" id="1_p0kpm"]
+[ext_resource type="FontFile" uid="uid://ha3e5up3nt73" path="res://assets/fonts/Geist-Regular.ttf" id="1_p0kpm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_420sr"]
 
