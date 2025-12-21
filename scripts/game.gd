@@ -16,6 +16,7 @@ const GRID_SIZE = 9
 
 
 # Game state
+var grid_feedback = GRIDFEEDBACK.new()
 var hint_system = HintSystem.new()
 var highlighter = Highlighter.new()
 var note_mode = false
@@ -215,6 +216,11 @@ func bind_selectgrid_button_actions():
 		var b = button as Button
 		b.pressed.connect(_on_selectgrid_button_pressed.bind(int(b.text)))
 
+func is_row_complete(r:int) -> bool:
+	for c in range(GRID_SIZE):
+		if game_grid[r][c].text == "":return false
+	return true
+
 func _on_selectgrid_button_pressed(number_pressed):
 	if selected_button != Vector2i(-1, -1):
 		var row = selected_button[0]
@@ -253,6 +259,12 @@ func _on_selectgrid_button_pressed(number_pressed):
 						var tween = create_tween()
 						tween.tween_property(stylebox, "bg_color", Settings.Cell_rang, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 						disable_numberpad(true)
+						
+						if is_row_complete(row):
+							var row_btns = []
+							for c in range (GRID_SIZE):
+								row_btns.append(game_grid[row][c])
+							grid_feedback.anime_completion(row_btns,col)
 					else:
 						stylebox.bg_color = Color.DARK_RED
 						lives -= 1

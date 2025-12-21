@@ -21,6 +21,7 @@ config/icon="uid://br0cwvcxrf425"
 
 Settings="*res://scripts/global/settings.gd"
 NoteHandler="*res://scripts/global/note_handler.gd"
+GridFeedback="*res://scripts/class/grid_feedback.gd"
 
 [display]
 
