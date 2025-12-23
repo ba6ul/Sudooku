@@ -244,6 +244,7 @@ func _on_selectgrid_button_pressed(number_pressed):
 					grid_selected_button.text = NoteHandler.get_formatted_note_text(row, col)
 				else:
 					grid_selected_button.text = ""
+				return
 			else:
 				# Normal mode - enter number
 				grid_selected_button.text = str(number_pressed)
