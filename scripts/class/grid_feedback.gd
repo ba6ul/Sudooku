@@ -6,6 +6,10 @@ const EASE_TYPE = Tween.EASE_OUT
 
 #rename it to flash and animation
 func play_correct_anime(btn: Button, final_color: Color):
+	
+	if not is_instance_valid(btn):
+		return
+		
 	var stylebox = btn.get_theme_stylebox("normal")
 	btn.pivot_offset = btn.custom_minimum_size / 2
 	var tween = btn.create_tween().set_parallel(true)
@@ -20,6 +24,9 @@ func play_correct_anime(btn: Button, final_color: Color):
 func anime_completion(buttons:Array, pivot_index: int):
 	for i in range(buttons.size()):
 		var btn = buttons[i]
+		
+		if not is_instance_valid(btn):
+			return
 		
 		var distance = abs(i - pivot_index)
 		var delay = distance * 0.05

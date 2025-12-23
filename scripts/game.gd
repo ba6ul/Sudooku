@@ -351,6 +351,7 @@ func check_puzzle_solved() -> bool:
 	
 func change_scene():
 	print("Done")
+	await get_tree().create_timer(0.5).timeout
 	get_tree().change_scene_to_file("res://scenes/win_scene.tscn")
 
 
