@@ -214,7 +214,11 @@ func _on_grid_button_pressed(pos: Vector2i, ans):
 func bind_selectgrid_button_actions():
 	for button in number_pad.get_children():
 		var b = button as Button
-		b.pressed.connect(_on_selectgrid_button_pressed.bind(int(b.text)))
+		if b.text.is_valid_int() and int(b.text) > 0:
+			b.pressed.connect(_on_selectgrid_button_pressed.bind(int(b.text)))
+		elif b.text == "X" or b.name == "ClearButton": 
+			if not b.pressed.is_connected(_on_clear_button_pressed):
+				b.pressed.connect(_on_clear_button_pressed)
 
 func is_row_complete(r:int) -> bool:
 	for c in range(GRID_SIZE):

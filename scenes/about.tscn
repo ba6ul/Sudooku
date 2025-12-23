@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://b3jitxt1fbsqa"]
 
-[ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="1_cm4eg"]
-[ext_resource type="Script" path="res://scripts/about.gd" id="1_lloox"]
-[ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="2_ylmpx"]
+[ext_resource type="Texture2D" uid="uid://b82vmghrl35eq" path="res://bg.svg" id="1_cm4eg"]
+[ext_resource type="Script" uid="uid://crdlu758uhqad" path="res://scripts/about.gd" id="1_lloox"]
+[ext_resource type="FontFile" uid="uid://pp6rkcr31pq6" path="res://assets/fonts/Takota.ttf" id="2_ylmpx"]
 [ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="3_mgwij"]
-[ext_resource type="FontFile" uid="uid://dh7yhyr3ubp8v" path="res://assets/fonts/Geist-Medium.ttf" id="4_cm4eg"]
+[ext_resource type="FontFile" uid="uid://cd8kwvfahrx46" path="res://assets/fonts/Geist-Medium.ttf" id="4_cm4eg"]
 
 [node name="About" type="Node2D"]
 script = ExtResource("1_lloox")
