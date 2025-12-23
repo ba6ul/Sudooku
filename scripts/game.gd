@@ -289,7 +289,7 @@ func _on_selectgrid_button_pressed(number_pressed):
 		# Make sure to highlight the cell back after new Input
 		highlighter.highlight_related_cells(GRID_SIZE,game_grid,selected_button)
 	update_digit_counts(number_pressed)
-	highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_pressed)
+	highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, number_pressed, true)
 
 func _hint_effect(hint):
 	var button = game_grid[hint.row][hint.col]

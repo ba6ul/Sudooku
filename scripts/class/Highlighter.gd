@@ -3,12 +3,12 @@ extends Node
 
 
 var last_highlighted_number := -1
-func highlight_matching_numbers(GRID_SIZE, game_grid, number: int):
+func highlight_matching_numbers(GRID_SIZE, game_grid, number: int,force_refresh: bool = false):
 	
 	if number <= 0:
 		return
 		
-	if number == last_highlighted_number:
+	if number == last_highlighted_number and not force_refresh:
 		return
 		
 	reset_all_highlights(GRID_SIZE, game_grid)
