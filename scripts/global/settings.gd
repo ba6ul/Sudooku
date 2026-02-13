@@ -17,6 +17,11 @@ const empty_Cell_rang = Color("#2b2b2b")
 var highlight_modulate: Color = Color(2, 2, 2)
 const Cell_correct = Color("#ace198")
 
+# Font sizes
+const NORMAL_FONT_SIZE = 45
+const HIGHLIGHT_FONT_SIZE = 50
+const NOTE_FONT_SIZE = 10
+
 
 var my_2d_array = []
 

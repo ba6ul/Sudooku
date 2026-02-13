@@ -24,7 +24,7 @@ func highlight_matching_numbers(GRID_SIZE, game_grid, number: int,force_refresh:
 			var font_size = btn.get("theme_override_font_sizes/font_size")
 			
 			#for Notes
-			if btn_text == str(number) and font_size == 10:
+			if btn_text == str(number) and font_size == Settings.NOTE_FONT_SIZE:
 				#Highlights only if there is 1 node with that value in a sub-grid
 				btn.add_theme_color_override("font_color", Color(1.0, 0.5, 0.0, 1))  
 			#for ans
@@ -34,7 +34,7 @@ func highlight_matching_numbers(GRID_SIZE, game_grid, number: int,force_refresh:
 				btn.add_theme_color_override("font_outline_color", Color(1.0, 0.5, 0.0, 1))
 				btn.add_theme_constant_override("outline_size", 2)  # Thickness of the stroke
 
-				btn.add_theme_font_size_override("font_size", 38)  # Scale
+				btn.add_theme_font_size_override("font_size", Settings.HIGHLIGHT_FONT_SIZE)  # Scale
 func reset_all_highlights(GRID_SIZE, game_grid):
 	for i in range(GRID_SIZE):
 		for j in range(GRID_SIZE):
@@ -46,8 +46,8 @@ func reset_all_highlights(GRID_SIZE, game_grid):
 			btn.remove_theme_color_override("font_color")
 			btn.remove_theme_color_override("font_outline_color")
 			btn.remove_theme_constant_override("outline_size")
-			if font_size == 38:
-				btn.set("theme_override_font_sizes/font_size", 32)
+			if font_size == Settings.HIGHLIGHT_FONT_SIZE:
+				btn.set("theme_override_font_sizes/font_size", Settings.NORMAL_FONT_SIZE)
 func reset_matching_numbers(GRID_SIZE, game_grid):
 		for i in range(GRID_SIZE):
 			for j in range(GRID_SIZE):
@@ -56,8 +56,8 @@ func reset_matching_numbers(GRID_SIZE, game_grid):
 				btn.remove_theme_color_override("font_color")
 				btn.remove_theme_color_override("font_outline_color")
 				btn.remove_theme_constant_override("outline_size")
-				if font_size == 38:
-					btn.set("theme_override_font_sizes/font_size", 32)
+				if font_size == Settings.HIGHLIGHT_FONT_SIZE:
+					btn.set("theme_override_font_sizes/font_size", Settings.NORMAL_FONT_SIZE)
 		last_highlighted_number = -1
 
 # Highlights ROW,COL,SUB-GRID

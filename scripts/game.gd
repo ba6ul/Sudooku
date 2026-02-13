@@ -173,7 +173,7 @@ func create_button(pos:Vector2i):
 		stylebox.bg_color = Settings.empty_Cell_rang
 		button.add_theme_stylebox_override("normal", stylebox)
 		
-	button.set("theme_override_font_sizes/font_size", 32)
+	button.set("theme_override_font_sizes/font_size", Settings.NORMAL_FONT_SIZE)
 	
 
 	var gap_Container = MarginContainer.new()
@@ -195,7 +195,7 @@ func _on_grid_button_pressed(pos: Vector2i, ans):
 	var grid_selected_button = game_grid[pos.x][pos.y]
 	var button_text = grid_selected_button.text
 	var is_prefilled = puzzle[pos.x][pos.y] != 0
-	var is_correct_text = button_text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == 32 and int(button_text) == solution_grid[pos.x][pos.y]
+	var is_correct_text = button_text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == Settings.NORMAL_FONT_SIZE and int(button_text) == solution_grid[pos.x][pos.y]
 	var is_marked_correct = grid_selected_button.has_theme_stylebox_override("normal") and grid_selected_button.get_theme_stylebox("normal").bg_color == Settings.Cell_rang_correct
 
 	# Disable numberpad for (prefilled, has correct value, is marked correct)
@@ -206,7 +206,7 @@ func _on_grid_button_pressed(pos: Vector2i, ans):
 		update_numpad_buttons()
 
 	# Highlighting
-	if button_text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == 32:
+	if button_text != "" and grid_selected_button.get("theme_override_font_sizes/font_size") == Settings.NORMAL_FONT_SIZE:
 		highlighter.highlight_matching_numbers(GRID_SIZE, game_grid, int(button_text))
 	highlighter.highlight_related_cells(GRID_SIZE, game_grid, pos)
 
@@ -219,11 +219,6 @@ func bind_selectgrid_button_actions():
 		elif b.text == "X" or b.name == "ClearButton": 
 			if not b.pressed.is_connected(_on_clear_button_pressed):
 				b.pressed.connect(_on_clear_button_pressed)
-
-func is_row_complete(r:int) -> bool:
-	for c in range(GRID_SIZE):
-		if game_grid[r][c].text == "":return false
-	return true
 
 func _on_selectgrid_button_pressed(number_pressed):
 	if selected_button != Vector2i(-1, -1):
@@ -248,7 +243,7 @@ func _on_selectgrid_button_pressed(number_pressed):
 			else:
 				# Normal mode - enter number
 				grid_selected_button.text = str(number_pressed)
-				grid_selected_button.set("theme_override_font_sizes/font_size", 32)
+				grid_selected_button.set("theme_override_font_sizes/font_size", Settings.NORMAL_FONT_SIZE)
 				
 				# Red/Green
 				if Settings.SHOW_HINTS:
@@ -259,22 +254,20 @@ func _on_selectgrid_button_pressed(number_pressed):
 					var stylebox:StyleBoxFlat = btn.get_theme_stylebox("normal").duplicate(true)
 					if result_match == true:
 						
+						check_and_animate_completions(row, col)
+						
 						#Correct Value animation
 						var flash_color = Color.LAWN_GREEN 
 						stylebox.bg_color = flash_color
 						var tween = create_tween()
 						tween.tween_property(stylebox, "bg_color", Settings.Cell_rang, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+						
 						disable_numberpad(true)
 						
 						# Haptic Feedback for Correct Answer
 						if OS.has_feature("mobile"):
-							Input.vibrate_handheld(20)
-						
-						if is_row_complete(row):
-							var row_btns = []
-							for c in range (GRID_SIZE):
-								row_btns.append(game_grid[row][c])
-							grid_feedback.anime_completion(row_btns,col)
+							Input.vibrate_handheld(50)
+
 					else:
 						stylebox.bg_color = Color.DARK_RED
 						lives -= 1
@@ -307,7 +300,74 @@ func _hint_effect(hint):
 	else:
 		hint_button.disabled = true
 		hint_button.text = "Hint: 0"
+#Animations
 
+# Checks if row is complete
+func is_row_complete(row: int) -> bool:
+	for col in range(GRID_SIZE):
+		var btn = game_grid[row][col]
+		if btn.text == "" or btn.get("theme_override_font_sizes/font_size") != Settings.NORMAL_FONT_SIZE:
+			return false
+		if int(btn.text) != solution_grid[row][col]:
+			return false
+	return true
+
+# Checks if column is complete
+func is_column_complete(col: int) -> bool:
+	for row in range(GRID_SIZE):
+		var btn = game_grid[row][col]
+		if btn.text == "" or btn.get("theme_override_font_sizes/font_size") != Settings.NORMAL_FONT_SIZE:
+			return false
+		if int(btn.text) != solution_grid[row][col]:
+			return false
+	return true
+
+# Checks if subgrid is complete
+func is_subgrid_complete(row: int, col: int) -> bool:
+	#Create a helper funtion to remove this code redundancy
+	var start_row = (row / 3) * 3
+	var start_col = (col / 3) * 3
+	
+	for r in range(start_row, start_row + 3):
+		for c in range(start_col, start_col + 3):
+			var btn = game_grid[r][c]
+			if btn.text == "" or btn.get("theme_override_font_sizes/font_size") != Settings.NORMAL_FONT_SIZE:
+				return false
+			if int(btn.text) != solution_grid[r][c]:
+				return false
+	return true
+	
+# Checks and trigger animations for completions
+func check_and_animate_completions(row: int, col: int):
+	# ROW
+	if is_row_complete(row):
+		var row_btns = []
+		for c in range(GRID_SIZE):
+			row_btns.append(game_grid[row][c])
+		grid_feedback.anime_completion(row_btns, col)
+	
+	# COL
+	if is_column_complete(col):
+		var col_btns = []
+		for r in range(GRID_SIZE):
+			col_btns.append(game_grid[r][col])
+		grid_feedback.anime_completion(col_btns, row)
+	
+	# SUBGRID (Remove the redundancy)
+	if is_subgrid_complete(row, col):
+		var subgrid_btns = []
+		var start_row = (row / 3) * 3
+		var start_col = (col / 3) * 3
+		
+		for r in range(start_row, start_row + 3):
+			for c in range(start_col, start_col + 3):
+				subgrid_btns.append(game_grid[r][c])
+				
+		var local_row = row - start_row
+		var local_col = col - start_col
+		var pivot = local_row * 3 + local_col
+		
+		grid_feedback.anime_completion(subgrid_btns, pivot)
 
 #Buttons
 
@@ -385,19 +445,19 @@ func initialize_digit_counts():
 	update_numpad_buttons()
 
 # Func to ignore note numbers
+# This function is only called after placing a normal number
+# Notes exit early via return, so no need to check note_mode or font_size
 func update_digit_counts(number_pressed):
-	if !note_mode:
-		# Only increment if the number is placed correctly
-		if selected_button != Vector2i(-1, -1):
-			var row = selected_button[0]
-			var col = selected_button[1]
-			if solution_grid[row][col] == number_pressed:
-				digit_counts[number_pressed] += 1
-				update_numpad_buttons()
-			else:
-				# If it's an incorrect entry, don't count it
-				# We still update the display for consistency
-				update_numpad_buttons()
+	if selected_button == Vector2i(-1, -1):
+		return
+	
+	var row = selected_button[0]
+	var col = selected_button[1]
+	
+	if solution_grid[row][col] == number_pressed:
+		digit_counts[number_pressed] += 1
+	
+	update_numpad_buttons()
 
 # decrement digit count, if removed from wrong cells
 func decrement_digit_count(number):
