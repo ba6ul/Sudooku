@@ -1,29 +1,37 @@
-[gd_scene load_steps=11 format=3 uid="uid://cwh3rvrytveu7"]
+[gd_scene format=3 uid="uid://cwh3rvrytveu7"]
 
 [ext_resource type="Script" uid="uid://cl6j45efhdttb" path="res://scripts/game.gd" id="1_cpr0p"]
 [ext_resource type="Theme" uid="uid://bym84v7my4448" path="res://assets/theme/keypad.tres" id="2_78awf"]
 [ext_resource type="Script" uid="uid://caw6uv71qvqg5" path="res://scripts/game_ui_buttons.gd" id="2_cpr0p"]
-[ext_resource type="Texture2D" uid="uid://cqc0rq12wdnie" path="res://assets/img/back-button.png" id="2_s0nni"]
-[ext_resource type="FontFile" uid="uid://teaipxqqilvw" path="res://assets/fonts/Geist-Black.ttf" id="3_aug50"]
-[ext_resource type="Texture2D" uid="uid://3kkph3vd1qvc" path="res://assets/img/reload.png" id="4_400sg"]
-[ext_resource type="FontFile" uid="uid://cd8kwvfahrx46" path="res://assets/fonts/Geist-Medium.ttf" id="4_kiw3p"]
-[ext_resource type="FontFile" uid="uid://pp6rkcr31pq6" path="res://assets/fonts/Takota.ttf" id="6_kiw3p"]
+[ext_resource type="Texture2D" uid="uid://cc4niy1ecu1pc" path="res://assets/img/back-button.png" id="2_s0nni"]
+[ext_resource type="FontFile" uid="uid://djv8oiwgiopt8" path="res://assets/fonts/Geist-Black.ttf" id="3_aug50"]
+[ext_resource type="Texture2D" uid="uid://da53k5prrfrpl" path="res://assets/img/reload.png" id="4_400sg"]
+[ext_resource type="FontFile" uid="uid://dh7yhyr3ubp8v" path="res://assets/fonts/Geist-Medium.ttf" id="4_kiw3p"]
+[ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="6_kiw3p"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qbsmt"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_78awf"]
 
-[node name="SudookuGame" type="Node2D"]
+[node name="SudookuGame" type="Node2D" unique_id=304525256]
 script = ExtResource("1_cpr0p")
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="." unique_id=62269649]
 offset_right = 8.0
 offset_bottom = 8.0
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qbsmt")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=507512243]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+[node name="GridContainer" type="GridContainer" parent="Button/MarginContainer" unique_id=78672188]
+layout_mode = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1559060695]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1666936689]
 visible = false
 custom_minimum_size = Vector2(4.585, 0)
 anchors_preset = 15
@@ -33,7 +41,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.160784, 0.160784, 0.152941, 1)
 
-[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer"]
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer" unique_id=270064232]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 111.0
@@ -42,30 +50,30 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer2" unique_id=254263630]
 layout_mode = 2
 theme_override_constants/separation = 140
 alignment = 1
 
-[node name="Back" type="Button" parent="CanvasLayer/MarginContainer2/HBoxContainer"]
+[node name="Back" type="Button" parent="CanvasLayer/MarginContainer2/HBoxContainer" unique_id=967914044]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
 icon = ExtResource("2_s0nni")
 
-[node name="Label" type="Label" parent="CanvasLayer/MarginContainer2/HBoxContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer2/HBoxContainer" unique_id=2037716266]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("3_aug50")
 theme_override_font_sizes/font_size = 45
 text = "Lives left: 3"
 
-[node name="Reload" type="Button" parent="CanvasLayer/MarginContainer2/HBoxContainer"]
+[node name="Reload" type="Button" parent="CanvasLayer/MarginContainer2/HBoxContainer" unique_id=81612819]
 layout_mode = 2
 action_mode = 0
 icon = ExtResource("4_400sg")
 
-[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer"]
+[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer" unique_id=1025079563]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -78,25 +86,25 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_bottom = 400
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer3" unique_id=1721332017]
 layout_mode = 2
 theme_override_constants/separation = 100
 alignment = 1
 
-[node name="HintButton" type="Button" parent="CanvasLayer/MarginContainer3/HBoxContainer"]
+[node name="HintButton" type="Button" parent="CanvasLayer/MarginContainer3/HBoxContainer" unique_id=697444864]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("4_kiw3p")
 theme_override_font_sizes/font_size = 55
 text = "Hint"
 
-[node name="note_toggle" type="Button" parent="CanvasLayer/MarginContainer3/HBoxContainer"]
+[node name="note_toggle" type="Button" parent="CanvasLayer/MarginContainer3/HBoxContainer" unique_id=413293889]
 layout_mode = 2
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_kiw3p")
 theme_override_font_sizes/font_size = 55
 text = "Note"
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer"]
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer" unique_id=512166625]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -105,7 +113,8 @@ offset_bottom = 200.0
 grow_horizontal = 2
 columns = 9
 
-[node name="NumberPad" type="GridContainer" parent="CanvasLayer"]
+[node name="NumberPad" type="GridContainer" parent="CanvasLayer" unique_id=1873238734]
+unique_name_in_owner = true
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -120,7 +129,7 @@ grow_vertical = 0
 scale = Vector2(2, 2)
 columns = 5
 
-[node name="Button" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button" type="Button" parent="CanvasLayer/NumberPad" unique_id=2012308257]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -129,7 +138,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "1"
 
-[node name="Button2" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button2" type="Button" parent="CanvasLayer/NumberPad" unique_id=1336668219]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -138,7 +147,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "2"
 
-[node name="Button3" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button3" type="Button" parent="CanvasLayer/NumberPad" unique_id=1747871216]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -147,7 +156,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "3"
 
-[node name="Button4" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button4" type="Button" parent="CanvasLayer/NumberPad" unique_id=1249389225]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -156,7 +165,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "4"
 
-[node name="Button5" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button5" type="Button" parent="CanvasLayer/NumberPad" unique_id=1690770091]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -165,7 +174,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "5"
 
-[node name="Button6" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button6" type="Button" parent="CanvasLayer/NumberPad" unique_id=288828601]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -174,7 +183,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "6"
 
-[node name="Button7" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button7" type="Button" parent="CanvasLayer/NumberPad" unique_id=774124143]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -183,7 +192,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "7"
 
-[node name="Button8" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button8" type="Button" parent="CanvasLayer/NumberPad" unique_id=422604027]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -192,7 +201,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "8"
 
-[node name="Button9" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="Button9" type="Button" parent="CanvasLayer/NumberPad" unique_id=1032032514]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 theme = ExtResource("2_78awf")
@@ -201,7 +210,7 @@ theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "9"
 
-[node name="clear_Button" type="Button" parent="CanvasLayer/NumberPad"]
+[node name="clear_Button" type="Button" parent="CanvasLayer/NumberPad" unique_id=530618515]
 self_modulate = Color(1, 0, 0, 1)
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -210,7 +219,7 @@ theme_override_fonts/font = ExtResource("6_kiw3p")
 theme_override_font_sizes/font_size = 34
 text = "X"
 
-[node name="UI Buttons" type="Control" parent="."]
+[node name="UI Buttons" type="Control" parent="." unique_id=1862827915]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

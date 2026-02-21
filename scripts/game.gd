@@ -1,7 +1,7 @@
 extends Node2D
 
 # Node references
-@onready var number_pad: GridContainer = $CanvasLayer/NumberPad
+@onready var number_pad: GridContainer = %NumberPad
 @onready var grid:GridContainer = $CanvasLayer/GridContainer
 @onready var button: Button = $Button
 @onready var lives_label: Label = $CanvasLayer/MarginContainer2/HBoxContainer/Label
@@ -264,9 +264,14 @@ func _on_selectgrid_button_pressed(number_pressed):
 						
 						disable_numberpad(true)
 						
-						# Haptic Feedback for Correct Answer
+						# Haptic Feedback for Incorrect Answer
+						
+						#For Mobile
 						if OS.has_feature("mobile"):
 							Input.vibrate_handheld(50)
+							
+						# For Controllers
+						Input.start_joy_vibration(0, 0.5, 0.5, 0.1)
 
 					else:
 						stylebox.bg_color = Color.DARK_RED
