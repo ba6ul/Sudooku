@@ -34,16 +34,23 @@
 - **Difficulty Scaling**: Choose from Simple to Master levels, affecting the number of pre-filled cells.
 
 ## 🎥 Development Journey
-The development of Sudooku was documented in two major phases:
+The development of Sudooku was documented across multiple videos:
 
 <p align="center">
-  <a href="https://youtu.be/pNoVTjTCaYE">
-	<img src="https://img.youtube.com/vi/pNoVTjTCaYE/0.jpg" width="350" alt="My First Godot Game"/>
-  </a>
+	<a href="https://youtu.be/pOmeMwMqzTw">
+	<img src="https://img.youtube.com/vi/pOmeMwMqzTw/0.jpg" width="250" alt="Sudooku Video"/>
+  </a> 
   <a href="https://youtu.be/CXRPVB1d9l0">
-	<img src="https://img.youtube.com/vi/CXRPVB1d9l0/0.jpg" width="350" alt="Sudoku Devlog"/>
+	<img src="https://img.youtube.com/vi/CXRPVB1d9l0/0.jpg" width="250" alt="Sudoku Devlog"/>
+  </a>
+   <a href="https://youtu.be/pNoVTjTCaYE">
+	<img src="https://img.youtube.com/vi/pNoVTjTCaYE/0.jpg" width="250" alt="My First Godot Game"/>
   </a>
 </p>
+
+1. **[How I Made My First Game with Godot](https://youtu.be/pNoVTjTCaYE)**: Exploring Godot for the first time, learning GDScript, and setting up the foundations.
+2. **[Building Sudoku vs The World’s Hardest Puzzle](https://youtu.be/CXRPVB1d9l0)**: Implementing the core logic, Note Mode, and the final polish for the Play Store.
+3. **[Video #3](https://youtu.be/pOmeMwMqzTw)**: Add the actual video title and description here.
 
 1. **[How I Made My First Game with Godot](https://youtu.be/pNoVTjTCaYE)**: Exploring Godot for the first time, learning GDScript, and setting up the foundations.
 2. **[Building Sudoku vs The World’s Hardest Puzzle](https://youtu.be/CXRPVB1d9l0)**: Implementing the core logic, Note Mode, and the final polish for the Play Store.
