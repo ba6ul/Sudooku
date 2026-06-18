@@ -50,10 +50,7 @@ The development of Sudooku was documented across multiple videos:
 
 1. **[How I Made My First Game with Godot](https://youtu.be/pNoVTjTCaYE)**: Exploring Godot for the first time, learning GDScript, and setting up the foundations.
 2. **[Building Sudoku vs The World’s Hardest Puzzle](https://youtu.be/CXRPVB1d9l0)**: Implementing the core logic, Note Mode, and the final polish for the Play Store.
-3. **[Video #3](https://youtu.be/pOmeMwMqzTw)**: Add the actual video title and description here.
-
-1. **[How I Made My First Game with Godot](https://youtu.be/pNoVTjTCaYE)**: Exploring Godot for the first time, learning GDScript, and setting up the foundations.
-2. **[Building Sudoku vs The World’s Hardest Puzzle](https://youtu.be/CXRPVB1d9l0)**: Implementing the core logic, Note Mode, and the final polish for the Play Store.
+3. **[Sudooku Release & Post-Launch Journey](https://youtu.be/pOmeMwMqzTw)**: Covering the release process, lessons learned, updates, and the journey after launching the game.
 
 ## 📸 Screenshots
 <p align="center">
