@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cl6j45efhdttb" path="res://scripts/game.gd" id="1_cpr0p"]
 [ext_resource type="Theme" uid="uid://bym84v7my4448" path="res://assets/theme/keypad.tres" id="2_78awf"]
 [ext_resource type="Script" uid="uid://caw6uv71qvqg5" path="res://scripts/game_ui_buttons.gd" id="2_cpr0p"]
+[ext_resource type="PackedScene" uid="uid://c4g5tmmy3rdkt" path="res://scenes/win_scene.tscn" id="2_g4kob"]
 [ext_resource type="Texture2D" uid="uid://cc4niy1ecu1pc" path="res://assets/img/back-button.png" id="2_s0nni"]
 [ext_resource type="FontFile" uid="uid://djv8oiwgiopt8" path="res://assets/fonts/Geist-Black.ttf" id="3_aug50"]
 [ext_resource type="Texture2D" uid="uid://da53k5prrfrpl" path="res://assets/img/reload.png" id="4_400sg"]
@@ -16,18 +17,93 @@
 [node name="SudookuGame" type="Node2D" unique_id=304525256]
 script = ExtResource("1_cpr0p")
 
+[node name="Wind" parent="." unique_id=1680215341 instance=ExtResource("2_g4kob")]
+visible = false
+
 [node name="Button" type="Button" parent="." unique_id=62269649]
 offset_right = 8.0
 offset_bottom = 8.0
 theme_override_styles/focus = SubResource("StyleBoxEmpty_qbsmt")
 
-[node name="MarginContainer" type="MarginContainer" parent="Button" unique_id=507512243]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="CellTemplate" type="Button" parent="." unique_id=1350367124]
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qbsmt")
 
-[node name="GridContainer" type="GridContainer" parent="Button/MarginContainer" unique_id=78672188]
+[node name="NoteMargin" type="MarginContainer" parent="CellTemplate" unique_id=809873735]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="NoteGrid" type="GridContainer" parent="CellTemplate/NoteMargin" unique_id=459696688]
 layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = -2
+theme_override_constants/v_separation = -2
+columns = 3
+
+[node name="Note1" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=1584701810]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note2" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=178364035]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note3" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=119513919]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note4" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=1146007616]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note5" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=999354024]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note6" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=380077170]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note7" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=160195719]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note8" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=40046707]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note9" type="Label" parent="CellTemplate/NoteMargin/NoteGrid" unique_id=1098468273]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1559060695]
 
@@ -137,6 +213,80 @@ theme_override_fonts/font = ExtResource("3_aug50")
 theme_override_font_sizes/font_size = 34
 theme_override_styles/focus = SubResource("StyleBoxEmpty_78awf")
 text = "1"
+
+[node name="NoteMargin" type="MarginContainer" parent="CanvasLayer/NumberPad/Button" unique_id=1429647194]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="NoteGrid" type="GridContainer" parent="CanvasLayer/NumberPad/Button/NoteMargin" unique_id=1810873732]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = -2
+theme_override_constants/v_separation = -2
+columns = 3
+
+[node name="Note1" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=700302017]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note2" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=506833942]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note3" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=627701912]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note4" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=909846849]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note5" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=1259985976]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note6" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=1838387305]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note7" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=699531098]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note8" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=2146473903]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
+
+[node name="Note9" type="Label" parent="CanvasLayer/NumberPad/Button/NoteMargin/NoteGrid" unique_id=489346959]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 17
 
 [node name="Button2" type="Button" parent="CanvasLayer/NumberPad" unique_id=1336668219]
 custom_minimum_size = Vector2(64, 64)

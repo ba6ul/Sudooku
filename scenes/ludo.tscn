@@ -1,0 +1,228 @@
+[gd_scene format=3 uid="uid://c0dg5437nqnx7"]
+
+[sub_resource type="GDScript" id="GDScript_lopxl"]
+script/source = "extends Control
+
+const GRID_SIZE = 15
+const CELL_SIZE = Vector2(42, 42)
+
+# --- Color Palette ---
+const C_RED     = Color(\"e53935\")
+const C_GREEN   = Color(\"43a047\")
+const C_BLUE    = Color(\"1e88e5\")
+const C_YELLOW  = Color(\"fdd835\")
+const C_WHITE   = Color(\"f5f5f5\")
+const C_BORDER  = Color(\"263238\")
+const C_BASE_BG = Color(\"eceff1\") # Light grey for the inner 2x2 of each home base
+
+# Center finish triangle colors (one per quadrant)
+# We'll draw these using a ColorRect layered approach or just solid colors
+const C_CENTER_RED    = Color(\"ef9a9a\")   # soft red
+const C_CENTER_GREEN  = Color(\"a5d6a7\")   # soft green
+const C_CENTER_BLUE   = Color(\"90caf9\")   # soft blue
+const C_CENTER_YELLOW = Color(\"fff59d\")   # soft yellow
+const C_CENTER_CORE   = Color(\"37474f\")   # dark center pixel
+
+# Safe/star squares on the main path
+const SAFE_SQUARES = [
+	Vector2i(6,  2),
+	Vector2i(2,  8),
+	Vector2i(8, 12),
+	Vector2i(12, 6),
+	# Starting cells (colored, already safe)
+	Vector2i(6,  1),
+	Vector2i(1,  8),
+	Vector2i(13, 6),
+	Vector2i(8, 13),
+]
+
+func _ready():
+	var grid = GridContainer.new()
+	grid.columns = GRID_SIZE
+	grid.add_theme_constant_override(\"h_separation\", 0)
+	grid.add_theme_constant_override(\"v_separation\", 0)
+	grid.set_anchors_preset(Control.PRESET_CENTER)
+	add_child(grid)
+	_generate_board(grid)
+
+func _generate_board(grid: GridContainer):
+	for r in range(GRID_SIZE):
+		for c in range(GRID_SIZE):
+			var cell = _build_cell(r, c)
+			grid.add_child(cell)
+
+func _build_cell(r: int, c: int) -> Control:
+	var container = Control.new()
+	container.custom_minimum_size = CELL_SIZE
+
+	var bg_color = _get_cell_color(r, c)
+	var panel = _make_panel(bg_color, r, c)
+	container.add_child(panel)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	# Overlay: star icon on safe squares
+	if Vector2i(r, c) in SAFE_SQUARES:
+		var star = _make_label(\"★\", Color(\"ffffff\"), 18)
+		container.add_child(star)
+		star.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+
+	# Overlay: arrows on home stretches pointing toward center
+	var arrow = _get_stretch_arrow(r, c)
+	if arrow != \"\":
+		var lbl = _make_label(arrow, Color(\"00000066\"), 14)
+		container.add_child(lbl)
+		lbl.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+
+	# Overlay: home base inner circle (2x2 playable area inside each 6x6)
+	if _is_home_inner(r, c):
+		var circ = _make_circle_overlay(_get_home_color(r, c))
+		container.add_child(circ)
+		circ.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	return container
+
+func _make_panel(bg_color: Color, r: int, c: int) -> Panel:
+	var panel = Panel.new()
+	panel.custom_minimum_size = CELL_SIZE
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = bg_color
+	style.set_border_width_all(1)
+	style.border_color = C_BORDER
+
+	# Rounded corners for home base regions
+	if _is_home_base(r, c):
+		var radius = 6
+		# Top-left home (RED)
+		if r < 6 and c < 6:
+			if r == 0 and c == 0: style.set_corner_radius(CORNER_TOP_LEFT, radius)
+			if r == 0 and c == 5: style.set_corner_radius(CORNER_TOP_RIGHT, radius)
+			if r == 5 and c == 0: style.set_corner_radius(CORNER_BOTTOM_LEFT, radius)
+			if r == 5 and c == 5: style.set_corner_radius(CORNER_BOTTOM_RIGHT, radius)
+		# Top-right home (GREEN)
+		if r < 6 and c > 8:
+			if r == 0 and c == 9:  style.set_corner_radius(CORNER_TOP_LEFT, radius)
+			if r == 0 and c == 14: style.set_corner_radius(CORNER_TOP_RIGHT, radius)
+			if r == 5 and c == 9:  style.set_corner_radius(CORNER_BOTTOM_LEFT, radius)
+			if r == 5 and c == 14: style.set_corner_radius(CORNER_BOTTOM_RIGHT, radius)
+		# Bottom-left home (BLUE)
+		if r > 8 and c < 6:
+			if r == 9  and c == 0: style.set_corner_radius(CORNER_TOP_LEFT, radius)
+			if r == 9  and c == 5: style.set_corner_radius(CORNER_TOP_RIGHT, radius)
+			if r == 14 and c == 0: style.set_corner_radius(CORNER_BOTTOM_LEFT, radius)
+			if r == 14 and c == 5: style.set_corner_radius(CORNER_BOTTOM_RIGHT, radius)
+		# Bottom-right home (YELLOW)
+		if r > 8 and c > 8:
+			if r == 9  and c == 9:  style.set_corner_radius(CORNER_TOP_LEFT, radius)
+			if r == 9  and c == 14: style.set_corner_radius(CORNER_TOP_RIGHT, radius)
+			if r == 14 and c == 9:  style.set_corner_radius(CORNER_BOTTOM_LEFT, radius)
+			if r == 14 and c == 14: style.set_corner_radius(CORNER_BOTTOM_RIGHT, radius)
+
+	panel.add_theme_stylebox_override(\"panel\", style)
+	return panel
+
+# Draws a colored circle inside the home base's inner 2x2 area
+func _make_circle_overlay(color: Color) -> Control:
+	var ctrl = ColorRect.new()
+	# We fake a circle with a rounded StyleBox overlay
+	# Use a Control that draws via _draw for a proper circle
+	var drawer = _CircleDrawer.new()
+	drawer.circle_color = color.darkened(0.15)
+	return drawer
+
+# Small label helper
+func _make_label(text: String, color: Color, size: int) -> Label:
+	var lbl = Label.new()
+	lbl.text = text
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl.add_theme_color_override(\"font_color\", color)
+	lbl.add_theme_font_size_override(\"font_size\", size)
+	return lbl
+
+func _is_home_base(r: int, c: int) -> bool:
+	return (r < 6 and c < 6) or (r < 6 and c > 8) or (r > 8 and c < 6) or (r > 8 and c > 8)
+
+# Inner 2x2 of each home base (where the token pieces sit)
+func _is_home_inner(r: int, c: int) -> bool:
+	if r >= 2 and r <= 3 and c >= 2 and c <= 3: return true   # RED
+	if r >= 2 and r <= 3 and c >= 11 and c <= 12: return true  # GREEN
+	if r >= 11 and r <= 12 and c >= 2 and c <= 3: return true  # BLUE
+	if r >= 11 and r <= 12 and c >= 11 and c <= 12: return true # YELLOW
+	return false
+
+func _get_home_color(r: int, c: int) -> Color:
+	if r < 6 and c < 6: return C_RED
+	if r < 6 and c > 8: return C_GREEN
+	if r > 8 and c < 6: return C_BLUE
+	return C_YELLOW
+
+# Returns directional arrow for home stretch cells
+func _get_stretch_arrow(r: int, c: int) -> String:
+	if r == 7 and c >= 1 and c <= 5: return \"→\"
+	if c == 7 and r >= 1 and r <= 5: return \"↓\"
+	if c == 7 and r >= 9 and r <= 13: return \"↑\"
+	if r == 7 and c >= 9 and c <= 13: return \"←\"
+	return \"\"
+
+func _get_cell_color(r: int, c: int) -> Color:
+	# 1. Center 3x3 — subdivide into 4 triangles + core
+	if r >= 6 and r <= 8 and c >= 6 and c <= 8:
+		return _get_center_color(r, c)
+
+	# 2. Home Bases
+	if r < 6 and c < 6:  return C_RED
+	if r < 6 and c > 8:  return C_GREEN
+	if r > 8 and c < 6:  return C_BLUE
+	if r > 8 and c > 8:  return C_YELLOW
+
+	# 3. Home Stretches
+	if r == 7 and c >= 1 and c <= 5: return C_RED
+	if c == 7 and r >= 1 and r <= 5: return C_GREEN
+	if c == 7 and r >= 9 and r <= 13: return C_BLUE
+	if r == 7 and c >= 9 and c <= 13: return C_YELLOW
+
+	# 4. Starting squares
+	if r == 6 and c == 1: return C_RED
+	if r == 1 and c == 8: return C_GREEN
+	if r == 13 and c == 6: return C_BLUE
+	if r == 8 and c == 13: return C_YELLOW
+
+	return C_WHITE
+
+# Maps the 3x3 center into 4 colored triangles meeting at a dark core
+func _get_center_color(r: int, c: int) -> Color:
+	# Dead center pixel
+	if r == 7 and c == 7: return C_CENTER_CORE
+
+	# Assign each of the 8 surrounding cells to a color quadrant
+	# Top row → Green, Bottom row → Blue, Left col → Red, Right col → Yellow
+	if r == 6:
+		if c == 6: return C_CENTER_RED.lerp(C_CENTER_GREEN, 0.5)
+		if c == 7: return C_CENTER_GREEN
+		if c == 8: return C_CENTER_GREEN.lerp(C_CENTER_YELLOW, 0.5)
+	if r == 7:
+		if c == 6: return C_CENTER_RED
+		if c == 8: return C_CENTER_YELLOW
+	if r == 8:
+		if c == 6: return C_CENTER_RED.lerp(C_CENTER_BLUE, 0.5)
+		if c == 7: return C_CENTER_BLUE
+		if c == 8: return C_CENTER_BLUE.lerp(C_CENTER_YELLOW, 0.5)
+	return C_CENTER_CORE
+
+# Inner class: draws a filled circle
+class _CircleDrawer extends Control:
+	var circle_color: Color = Color.WHITE
+
+	func _draw():
+		var center = size / 2
+		var radius = min(size.x, size.y) * 0.38
+		draw_circle(center, radius, circle_color)
+		# Subtle inner highlight
+		draw_arc(center, radius * 0.55, 0, PI, 24, circle_color.lightened(0.4), 2.0)
+"
+
+[node name="Ludo" type="Control" unique_id=1538885327]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_lopxl")

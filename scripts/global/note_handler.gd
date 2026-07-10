@@ -30,25 +30,23 @@ func remove_note(row: int, col: int, number: int):
 	note_grid[row][col].erase(number)
 
 func get_formatted_note_text(row: int, col: int) -> String:
-	# If no notes, return empty string
+
 	if note_grid[row][col].is_empty():
 		return ""
-	
-	# Create a 3x3 grid representation of notes with fixed spacing
+		
 	var note_grid_text = [
 		["", "", ""],
 		["", "", ""],
 		["", "", ""]
 	]
-	
-	# Map numbers to their positions in the 3x3 grid
+	#plz work
 	var note_positions = {
 		1: [0, 0], 2: [0, 1], 3: [0, 2],
 		4: [1, 0], 5: [1, 1], 6: [1, 2],
 		7: [2, 0], 8: [2, 1], 9: [2, 2]
 	}
 	
-	# Placing notes in their grid positions
+	# pos
 	var keys = note_grid[row][col].keys()
 	keys.sort()
 	for number in keys:
@@ -78,3 +76,24 @@ func clear_notes(row: int, col: int):
 
 func get_notes(row: int, col: int) -> Array:
 	return note_grid[row][col].keys()
+	
+# Add these two methods to NoteHandler (autoload singleton)
+# === Save System Integration Methods ===
+
+# Returns all notes as a serializable dict: { "0_0": [1,3,5], "4_2": [9], ... }
+func get_all_notes() -> Dictionary:
+	var result = {}
+	for row in range(GRID_SIZE):
+		for col in range(GRID_SIZE):
+			if not note_grid[row][col].is_empty():
+				var key = "%d_%d" % [row, col]
+				result[key] = note_grid[row][col].keys()
+	return result
+
+# Restores notes for a cell from a loaded array (used by SaveSystem restore)
+func set_notes(row: int, col: int, nums: Array) -> void:
+	note_grid[row][col].clear()
+	for num in nums:
+		# Explicitly cast to int. JSON parsing often converts numbers to floats,
+		# which would create keys like { 1.0: true } instead of { 1: true }
+		note_grid[row][col][int(num)] = true

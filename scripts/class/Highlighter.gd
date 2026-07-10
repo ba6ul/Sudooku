@@ -60,6 +60,7 @@ func reset_matching_numbers(GRID_SIZE, game_grid):
 					btn.set("theme_override_font_sizes/font_size", Settings.NORMAL_FONT_SIZE)
 		last_highlighted_number = -1
 
+
 # Highlights ROW,COL,SUB-GRID
 func highlight_related_cells(GRID_SIZE,game_grid,pos: Vector2i):
 	var row = pos.x

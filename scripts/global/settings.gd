@@ -9,9 +9,12 @@ var DIFFICULTY = 1 #1
 var SHOW_HINTS = true
 
 #UI
-const Cell_rang = Color("#3b1578")
-const Cell_rang_correct = Color("#3b1579") #add the cell color 
-const empty_Cell_rang = Color("#2b2b2b") 
+# Cell theme colors — these exist so the user will eventually be able to
+# pick a theme (values will become configurable). Do NOT hardcode these
+# colors elsewhere; always reference them from here.
+const Cell_rang = Color("#3b1578")          # bg for prefilled cells + cells answered correctly
+const Cell_rang_correct = Color("#3b1579")  # reserved: bg marker for correctly-solved cells (currently only compared against in game.gd, never applied)
+const empty_Cell_rang = Color("#2b2b2b")    # bg for empty/editable cells
 
 #btn.modulate = Color(1.5, 1.2, 0.4, 1) # use for maybe in correct value
 var highlight_modulate: Color = Color(2, 2, 2)

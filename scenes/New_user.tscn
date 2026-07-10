@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://dep3j877xfy63"]
+
+[ext_resource type="Script" uid="uid://by662rq1iumjy" path="res://scenes/new.gd" id="1_va83j"]
+[ext_resource type="Texture2D" uid="uid://d2f0uq5i5m8md" path="res://bg.svg" id="2_1mo56"]
+[ext_resource type="FontFile" uid="uid://cj7tp23uwq8xx" path="res://assets/fonts/Takota.ttf" id="3_41gks"]
+[ext_resource type="Theme" uid="uid://c38rj6xd6og8i" path="res://assets/theme/MainMenu.tres" id="4_mqq1w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rdwks"]
+bg_color = Color(0.399676, 0.00203016, 0.798556, 1)
+
+[node name="Alert" type="CanvasLayer" unique_id=783071231]
+layer = 10
+script = ExtResource("1_va83j")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=246436758]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_1mo56")
+expand_mode = 4
+
+[node name="Panel" type="Panel" parent="." unique_id=172561193]
+custom_minimum_size = Vector2(500, 500)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rdwks")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=88580280]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -273.0
+offset_top = -225.0
+offset_right = 273.0
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=466123257]
+layout_mode = 2
+
+[node name="Congrats" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1571002681]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_41gks")
+theme_override_font_sizes/font_size = 72
+text = "Welcome"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Detail" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1187577172]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "\\Work in Progress!
+If you notice any issues,
+please use the feedback button
+ 
+your support helps a lot!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="CenterContainer/VBoxContainer" unique_id=260280465]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=207183203]
+custom_minimum_size = Vector2(300, 35)
+layout_mode = 2
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="main_menu" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer" unique_id=1718465953]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme = ExtResource("4_mqq1w")
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_font_sizes/font_size = 20
+text = "Got it"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/main_menu" to="." method="_on_main_menu_pressed"]

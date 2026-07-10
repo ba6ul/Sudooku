@@ -1,0 +1,324 @@
+[gd_scene format=3 uid="uid://dis5dnie255ht"]
+
+[sub_resource type="GDScript" id="GDScript_g8yvt"]
+script/source = "extends Control
+
+# --- Config ---
+const COLS       = 16
+const ROWS       = 16
+const MINES      = 40
+const CELL_SIZE  = Vector2(38, 38)
+
+# --- Colors ---
+const C_HIDDEN   = Color(\"455a64\")   # unrevealed cell
+const C_REVEALED = Color(\"eceff1\")   # revealed empty
+const C_MINE_BG  = Color(\"c62828\")   # mine cell
+const C_FLAG     = Color(\"ffd600\")   # flag color
+const C_BORDER_H = Color(\"607d8b\")   # hidden border highlight
+const C_BORDER_R = Color(\"b0bec5\")   # revealed border
+const C_BORDER_D = Color(\"263238\")   # dark shadow border
+
+# Number colors (classic Minesweeper palette)
+const NUMBER_COLORS = [
+	Color.TRANSPARENT,   # 0 - not shown
+	Color(\"1565c0\"),     # 1 - blue
+	Color(\"2e7d32\"),     # 2 - green
+	Color(\"c62828\"),     # 3 - red
+	Color(\"4a148c\"),     # 4 - dark purple
+	Color(\"b71c1c\"),     # 5 - dark red
+	Color(\"006064\"),     # 6 - teal
+	Color(\"212121\"),     # 7 - black
+	Color(\"546e7a\"),     # 8 - grey
+]
+
+# --- State ---
+var grid_data   : Array = []   # [{ mine, revealed, flagged, neighbor_count }]
+var game_over   : bool  = false
+var game_won    : bool  = false
+var first_click : bool  = true
+var mine_count  : int   = MINES
+var flag_count  : int   = 0
+var cell_panels : Array = []   # flat array of Panel nodes
+
+var grid_container : GridContainer
+var status_label   : Label
+var mine_label     : Label
+var reset_btn      : Button
+
+func _ready():
+	_build_ui()
+	_init_grid()
+
+# ─────────────────────────────────────────
+#  UI CONSTRUCTION
+# ─────────────────────────────────────────
+func _build_ui():
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_preset(Control.PRESET_CENTER)
+	vbox.add_theme_constant_override(\"separation\", 8)
+	add_child(vbox)
+
+	# --- Top bar ---
+	var topbar = HBoxContainer.new()
+	topbar.add_theme_constant_override(\"separation\", 16)
+	topbar.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(topbar)
+
+	mine_label = Label.new()
+	mine_label.text = \"💣 %d\" % mine_count
+	mine_label.add_theme_font_size_override(\"font_size\", 20)
+	topbar.add_child(mine_label)
+
+	reset_btn = Button.new()
+	reset_btn.text = \"🙂\"
+	reset_btn.add_theme_font_size_override(\"font_size\", 20)
+	reset_btn.custom_minimum_size = Vector2(48, 48)
+	reset_btn.pressed.connect(_on_reset)
+	topbar.add_child(reset_btn)
+
+	status_label = Label.new()
+	status_label.text = \"     \"
+	status_label.add_theme_font_size_override(\"font_size\", 20)
+	topbar.add_child(status_label)
+
+	# --- Grid ---
+	grid_container = GridContainer.new()
+	grid_container.columns = COLS
+	grid_container.add_theme_constant_override(\"h_separation\", 2)
+	grid_container.add_theme_constant_override(\"v_separation\", 2)
+	vbox.add_child(grid_container)
+
+# ─────────────────────────────────────────
+#  GRID INIT
+# ─────────────────────────────────────────
+func _init_grid():
+	# Clear old children
+	for child in grid_container.get_children():
+		child.queue_free()
+	cell_panels.clear()
+	grid_data.clear()
+
+	game_over  = false
+	game_won   = false
+	first_click = true
+	flag_count = 0
+	mine_count = MINES
+	mine_label.text = \"💣 %d\" % (mine_count - flag_count)
+	status_label.text = \"\"
+	reset_btn.text = \"🙂\"
+
+	# Build flat grid_data (no mines yet — placed on first click)
+	for i in range(ROWS * COLS):
+		grid_data.append({ \"mine\": false, \"revealed\": false, \"flagged\": false, \"count\": 0 })
+
+	# Build cell panels
+	for i in range(ROWS * COLS):
+		var panel = _make_cell_panel(i)
+		grid_container.add_child(panel)
+		cell_panels.append(panel)
+
+func _make_cell_panel(idx: int) -> Panel:
+	var panel = Panel.new()
+	panel.custom_minimum_size = CELL_SIZE
+
+	_style_hidden(panel)
+
+	# Left click → reveal
+	var left = panel.gui_input.connect(func(ev): _on_cell_input(ev, idx))
+	panel.set_meta(\"idx\", idx)
+
+	return panel
+
+# ─────────────────────────────────────────
+#  INPUT
+# ─────────────────────────────────────────
+func _on_cell_input(event: InputEvent, idx: int):
+	if game_over or game_won: return
+	if not event is InputEventMouseButton or not event.pressed: return
+
+	var cell = grid_data[idx]
+	if event.button_index == MOUSE_BUTTON_LEFT:
+		if cell[\"flagged\"]: return
+		if first_click:
+			_place_mines(idx)
+			first_click = false
+		_reveal(idx)
+		_check_win()
+
+	elif event.button_index == MOUSE_BUTTON_RIGHT:
+		if cell[\"revealed\"]: return
+		cell[\"flagged\"] = !cell[\"flagged\"]
+		flag_count += 1 if cell[\"flagged\"] else -1
+		mine_label.text = \"💣 %d\" % (mine_count - flag_count)
+		_refresh_cell(idx)
+
+# ─────────────────────────────────────────
+#  MINE PLACEMENT (safe first click)
+# ─────────────────────────────────────────
+func _place_mines(safe_idx: int):
+	var safe_neighbors = _get_neighbors(safe_idx)
+	safe_neighbors.append(safe_idx)
+
+	var placed = 0
+	while placed < MINES:
+		var idx = randi() % (ROWS * COLS)
+		if idx in safe_neighbors: continue
+		if grid_data[idx][\"mine\"]: continue
+		grid_data[idx][\"mine\"] = true
+		placed += 1
+
+	# Compute neighbor counts
+	for i in range(ROWS * COLS):
+		if grid_data[i][\"mine\"]: continue
+		var count = 0
+		for n in _get_neighbors(i):
+			if grid_data[n][\"mine\"]: count += 1
+		grid_data[i][\"count\"] = count
+
+# ─────────────────────────────────────────
+#  REVEAL LOGIC (flood fill)
+# ─────────────────────────────────────────
+func _reveal(idx: int):
+	var cell = grid_data[idx]
+	if cell[\"revealed\"] or cell[\"flagged\"]: return
+
+	cell[\"revealed\"] = true
+	_refresh_cell(idx)
+
+	if cell[\"mine\"]:
+		_trigger_game_over(idx)
+		return
+
+	# Flood fill zeros
+	if cell[\"count\"] == 0:
+		for n in _get_neighbors(idx):
+			_reveal(n)
+
+func _trigger_game_over(clicked_idx: int):
+	game_over = true
+	reset_btn.text = \"😵\"
+	status_label.text = \"💥 BOOM\"
+	# Reveal all mines
+	for i in range(ROWS * COLS):
+		if grid_data[i][\"mine\"] and not grid_data[i][\"flagged\"]:
+			grid_data[i][\"revealed\"] = true
+			_refresh_cell(i)
+		# Mark wrong flags
+		if grid_data[i][\"flagged\"] and not grid_data[i][\"mine\"]:
+			_refresh_cell(i)
+
+func _check_win():
+	var unrevealed = 0
+	for cell in grid_data:
+		if not cell[\"revealed\"]: unrevealed += 1
+	if unrevealed == MINES:
+		game_won = true
+		reset_btn.text = \"😎\"
+		status_label.text = \"✨ WIN!\"
+
+# ─────────────────────────────────────────
+#  NEIGHBOR UTILITY
+# ─────────────────────────────────────────
+func _get_neighbors(idx: int) -> Array:
+	var neighbors = []
+	var row = idx / COLS
+	var col = idx % COLS
+	for dr in [-1, 0, 1]:
+		for dc in [-1, 0, 1]:
+			if dr == 0 and dc == 0: continue
+			var nr = row + dr
+			var nc = col + dc
+			if nr >= 0 and nr < ROWS and nc >= 0 and nc < COLS:
+				neighbors.append(nr * COLS + nc)
+	return neighbors
+
+# ─────────────────────────────────────────
+#  CELL RENDERING
+# ─────────────────────────────────────────
+func _refresh_cell(idx: int):
+	var panel = cell_panels[idx]
+	var cell  = grid_data[idx]
+
+	# Clear old label children
+	for child in panel.get_children():
+		child.queue_free()
+
+	if not cell[\"revealed\"]:
+		if cell[\"flagged\"]:
+			_style_hidden(panel)
+			_add_label(panel, \"🚩\", Color.WHITE, 18)
+		else:
+			_style_hidden(panel)
+		return
+
+	# Revealed
+	if cell[\"mine\"]:
+		_style_mine(panel)
+		_add_label(panel, \"💣\", Color.WHITE, 18)
+	else:
+		_style_revealed(panel)
+		if cell[\"count\"] > 0:
+			_add_label(panel, str(cell[\"count\"]), NUMBER_COLORS[cell[\"count\"]], 20)
+
+func _add_label(parent: Panel, text: String, color: Color, size: int):
+	var lbl = Label.new()
+	lbl.text = text
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override(\"font_size\", size)
+	lbl.add_theme_color_override(\"font_color\", color)
+	lbl.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	parent.add_child(lbl)
+
+# ─────────────────────────────────────────
+#  STYLE HELPERS
+# ─────────────────────────────────────────
+func _make_style(bg: Color, top_left: Color, bottom_right: Color, radius: int = 3) -> StyleBoxFlat:
+	var s = StyleBoxFlat.new()
+	s.bg_color = bg
+	s.set_corner_radius_all(radius)
+	# Fake 3D bevel using border
+	s.border_color = top_left
+	s.set_border_width_all(2)
+	return s
+
+func _style_hidden(panel: Panel):
+	var s = StyleBoxFlat.new()
+	s.bg_color = C_HIDDEN
+	s.set_corner_radius_all(4)
+	s.set_border_width_all(2)
+	s.border_color = C_BORDER_H
+	# Raised bevel illusion
+	s.border_width_top    = 3
+	s.border_width_left   = 3
+	s.border_width_bottom = 1
+	s.border_width_right  = 1
+	panel.add_theme_stylebox_override(\"panel\", s)
+
+func _style_revealed(panel: Panel):
+	var s = StyleBoxFlat.new()
+	s.bg_color = C_REVEALED
+	s.set_corner_radius_all(2)
+	s.set_border_width_all(1)
+	s.border_color = C_BORDER_R
+	panel.add_theme_stylebox_override(\"panel\", s)
+
+func _style_mine(panel: Panel):
+	var s = StyleBoxFlat.new()
+	s.bg_color = C_MINE_BG
+	s.set_corner_radius_all(2)
+	s.set_border_width_all(1)
+	s.border_color = C_BORDER_D
+	panel.add_theme_stylebox_override(\"panel\", s)
+
+# ─────────────────────────────────────────
+#  RESET
+# ─────────────────────────────────────────
+func _on_reset():
+	_init_grid()
+"
+
+[node name="Minesweeper" type="Control" unique_id=2052589934]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_g8yvt")
