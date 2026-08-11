@@ -54,8 +54,8 @@ The development of Sudooku was documented across multiple videos:
 
 ## 📸 Screenshots
 <p align="center">
-  <img src="./ss01.png" width="30%" />
-  <img src="./ss02.png" width="30%" />
+  <img src="./docs/ss01.png" width="30%" />
+  <img src="./docs/ss02.png" width="30%" />
 </p>
 
 ## 🛠️ Built With
